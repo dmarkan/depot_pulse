@@ -1,0 +1,52 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* LOADING SCREEN */
+.hide {
+    display: none;
+}
+.home_logo, .home_icon {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 15vh;
+}
+.home_logo {
+    margin-top: 5vh;
+}
+.home_icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vh;
+}
+
+/* MAIN SCREEN */
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    height: 6vh;
+    margin: 2vh;
+}
+
+/* DATE */
+.date {
+   text-align: center;
+}
+.month_and_year {
+    display: flex;
+    justify-content: center;
+}
+
+/* SLIDER */
+.slider {
+   text-align: center;
+}
+
+

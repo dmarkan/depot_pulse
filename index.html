@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Depot Pulse</title>
+</head>
+<body>
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" class="hide">
+    <img src="images/oximio_logo.jpg" alt="home_logo" class="home_logo">
+    <img src="images/depot_pulse_icon.png" alt="home_icon" class="home_icon">
+    </div>
+
+    <!-- MAIN SCREEN -->
+    
+    <!-- HEADER -->
+    <div class="header">
+        <img src="images/depot_pulse_icon.png" alt="depot_pulse_icon">
+        <button>Select a country</button>
+    </div>
+    <div class="date">
+        <div class="month_and_year">
+        <p id="monthDisplay"></p>
+        <p id="yearDisplay"></p>
+        </div>
+        <p id="dayDisplay"></p>
+    </div>
+
+    <!-- SLIDER -->
+    <div id="slider" class="slider">
+<h2>0</h2>
+<div>
+  <input class="hide" id="input" type="number" value="100" />
+</div>
+<input value="1" min="1" max="100" id="range" type="range" />
+</div>
+<!-- ----------------------------- -->
+</body>
+<script src="main.js"></script>
+</html>
