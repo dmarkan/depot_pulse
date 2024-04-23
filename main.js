@@ -1,17 +1,29 @@
 // DATE
-const date = new Date();
-let day = date.getDate();
-let month = date.toLocaleString('default', { month: 'long' });
-let year = date.getFullYear();
-let dayDisplay = document.getElementById("dayDisplay");
-let monthDisplay = document.getElementById("monthDisplay");
-let yearDisplay = document.getElementById("yearDisplay");
+document.addEventListener("DOMContentLoaded", function() {
+    updateCarousel(new Date());
+  });
 
-window.onload = () => {
-    dayDisplay.innerHTML = day;
-    monthDisplay.innerHTML = month + "&nbsp";
-    yearDisplay.innerHTML = year;
-};
+  function updateCarousel(date) {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    const carouselItem = document.getElementById('carousel-item');
+    carouselItem.innerHTML = months[date.getMonth()] + ' ' + date.getFullYear();
+  }
+  
+  function prevMonth() {
+    const currentDate = new Date(document.getElementById('carousel-item').textContent);
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    updateCarousel(newDate);
+  }
+  
+  function nextMonth() {
+    const currentDate = new Date(document.getElementById('carousel-item').textContent);
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    updateCarousel(newDate);
+  }
+
+//   DAYS
+
 // SLIDER
 const slider = document.getElementById('slider');
 const range = document.getElementById('range');
@@ -27,3 +39,7 @@ function calc() {
   h2.innerHTML = percentageByValue;
 }
 calc();
+
+
+
+  

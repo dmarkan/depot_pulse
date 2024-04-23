@@ -36,17 +36,48 @@
 }
 
 /* DATE */
-.date {
-   text-align: center;
-}
-.month_and_year {
+.carousel {
+    position: relative;
+    width: 300px; /* Adjust width as needed */
+    margin: 0 auto;
+    text-align: center;
+  }
+  .carousel-container {
+    overflow: hidden;
+  }
+  .carousel-item {
     display: flex;
     justify-content: center;
-}
+    align-items: center;
+    height: 200px; /* Adjust height as needed */
+  }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+  }
+  .prev {
+    left: 10px;
+  }
+  .next {
+    right: 10px;
+  }
+  
+  /* DAYS */
+
+  
 
 /* SLIDER */
 .slider {
    text-align: center;
 }
+
+
+
 
 

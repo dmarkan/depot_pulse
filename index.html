@@ -20,13 +20,17 @@
         <img src="images/depot_pulse_icon.png" alt="depot_pulse_icon">
         <button>Select a country</button>
     </div>
-    <div class="date">
-        <div class="month_and_year">
-        <p id="monthDisplay"></p>
-        <p id="yearDisplay"></p>
+    <!-- DATE -->
+    <div class="carousel">
+        <div class="carousel-container">
+          <div class="carousel-item" id="carousel-item">
+            <!-- Content will be filled by JavaScript -->
+          </div>
         </div>
-        <p id="dayDisplay"></p>
-    </div>
+        <button class="arrow prev" onclick="prevMonth()">&#10094;</button>
+        <button class="arrow next" onclick="nextMonth()">&#10095;</button>
+      </div>
+<!-- DAYS -->
 
     <!-- SLIDER -->
     <div id="slider" class="slider">
@@ -36,7 +40,9 @@
 </div>
 <input value="1" min="1" max="100" id="range" type="range" />
 </div>
-<!-- ----------------------------- -->
+
+
+  
 </body>
 <script src="main.js"></script>
 </html>
