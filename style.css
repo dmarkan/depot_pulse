@@ -69,12 +69,64 @@
   }
   
   /* DAYS */
-
+  .custom-carousel {
+    position: relative;
+    width: 150px; /* Adjust width as needed */
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .custom-carousel-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .custom-carousel-item {
+    flex: 0 0 calc(20% - 10px); /* Adjust width as needed */
+    height: 50px; /* Adjust height as needed */
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .center-custom-day {
+    flex: 0 0 calc(40% - 10px); /* Adjust width as needed */
+  }
+  
+  .custom-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+    width: 30px; /* Adjust width as needed */
+    z-index: 1; /* Ensure arrows are above the carousel items */
+  }
+  
+  .prev-ar {
+    left: -50px;
+  }
+  
+  .next-ar {
+    right: -80px;
+  }
+  
   
 
 /* SLIDER */
 .slider {
    text-align: center;
+}
+
+/* APPLY BUTTON */
+.apply {
+    display: block;
+   margin: auto;
 }
 
 

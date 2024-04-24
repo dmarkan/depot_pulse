@@ -23,7 +23,45 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
 //   DAYS
-
+document.addEventListener("DOMContentLoaded", function() {
+    updateCustomCarousel(15); // Start with center day 15
+  });
+  
+  function updateCustomCarousel(centerDay) {
+    const customCarouselItems = document.querySelectorAll('.custom-carousel-item');
+    const centerIndex = Math.floor(customCarouselItems.length / 2);
+  
+    for (let i = 0; i < customCarouselItems.length; i++) {
+      let newDay = centerDay - centerIndex + i;
+      // Adjust for days below 1 and above 31
+      if (newDay < 1) {
+        newDay = 31 + newDay;
+      } else if (newDay > 31) {
+        newDay = newDay - 31;
+      }
+      customCarouselItems[i].textContent = newDay;
+      if (i === centerIndex) {
+        customCarouselItems[i].classList.add('center-custom-day');
+      } else {
+        customCarouselItems[i].classList.remove('center-custom-day');
+      }
+    }
+  }
+  
+  function prevDay() {
+    const customCarouselItems = document.querySelectorAll('.custom-carousel-item');
+    const centerDay = parseInt(customCarouselItems[2].textContent); // Center item is at index 2
+    const newCenterDay = centerDay === 1 ? 31 : centerDay - 1;
+    updateCustomCarousel(newCenterDay);
+  }
+  
+  function nextDay() {
+    const customCarouselItems = document.querySelectorAll('.custom-carousel-item');
+    const centerDay = parseInt(customCarouselItems[2].textContent); // Center item is at index 2
+    const newCenterDay = centerDay === 31 ? 1 : centerDay + 1;
+    updateCustomCarousel(newCenterDay);
+  }
+  
 // SLIDER
 const slider = document.getElementById('slider');
 const range = document.getElementById('range');
