@@ -1,3 +1,32 @@
+// SELECT COUNTRY
+function toggleDropdown() {
+    var dropdownContent = document.getElementById("dropdownContent");
+    dropdownContent.classList.toggle("show");
+    document.body.classList.toggle("overlay");
+  
+    if (dropdownContent.classList.contains("show")) {
+      dropdownContent.style.top = "50%";
+      dropdownContent.style.left = "50%";
+      dropdownContent.style.transform = "translate(-50%, -50%)";
+    }
+  }
+  
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn') && !event.target.matches('.dropdown-content')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+          document.body.classList.remove("overlay");
+        }
+      }
+    }
+  }
+  
+
 // DATE
 document.addEventListener("DOMContentLoaded", function() {
     updateCarousel(new Date());
