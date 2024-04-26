@@ -2,13 +2,13 @@
 function toggleDropdown() {
     var dropdownContent = document.getElementById("dropdownContent");
     dropdownContent.classList.toggle("show");
-    document.body.classList.toggle("overlay");
+    document.body.classList.toggle("overlay"); // Toggle the "overlay" class on the body
+  }
   
-    if (dropdownContent.classList.contains("show")) {
-      dropdownContent.style.top = "50%";
-      dropdownContent.style.left = "50%";
-      dropdownContent.style.transform = "translate(-50%, -50%)";
-    }
+  function selectCountry(countryName, flagSrc) {
+    var dropbtn = document.querySelector(".dropbtn");
+    dropbtn.innerHTML = '<img src="' + flagSrc + '" alt="' + countryName + ' Flag" class="flag-icon">' + countryName;
+    toggleDropdown();
   }
   
   // Close the dropdown if the user clicks outside of it
@@ -20,11 +20,12 @@ function toggleDropdown() {
         var openDropdown = dropdowns[i];
         if (openDropdown.classList.contains('show')) {
           openDropdown.classList.remove('show');
-          document.body.classList.remove("overlay");
+          document.body.classList.remove("overlay"); // Remove the "overlay" class from the body
         }
       }
     }
   }
+  
   
 
 // DATE
