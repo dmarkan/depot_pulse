@@ -25,8 +25,6 @@ function toggleDropdown() {
       }
     }
   }
-  
-  
 
 // DATE
 document.addEventListener("DOMContentLoaded", function() {
@@ -107,6 +105,79 @@ function calc() {
   h2.innerHTML = percentageByValue;
 }
 calc();
+
+// CHART
+document.addEventListener("DOMContentLoaded", function() {
+    // Get canvas element
+    var canvas = document.getElementById("chartCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // Function to set canvas size
+    function setCanvasSize() {
+        var canvasWidth = window.innerWidth * 0.8; // 80% of the window width
+        var canvasHeight = window.innerHeight * 0.4; // 40% of the window height
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+    }
+
+    // Call the function to set canvas size initially
+    setCanvasSize();
+
+    // Redraw the chart whenever the window size changes
+    window.addEventListener('resize', function() {
+        setCanvasSize();
+        drawChart();
+    });
+
+    // Function to draw the chart
+    function drawChart() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw y-axis line
+        ctx.beginPath();
+        ctx.moveTo(canvas.width * 0.1, canvas.height * 0.1); // Start from 10% of canvas width and height
+        ctx.lineTo(canvas.width * 0.1, canvas.height * 0.9); // Draw vertically to 90% of canvas height
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw x-axis line
+        ctx.beginPath();
+        ctx.moveTo(canvas.width * 0.1, canvas.height * 0.9); // Start from 10% of canvas width and 90% of canvas height
+        ctx.lineTo(canvas.width * 0.9, canvas.height * 0.9); // Draw horizontally to 90% of canvas width
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw y-axis ticks
+        ctx.font = "10px Arial"; // Smaller font size
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#000";
+        ctx.fillText("100%", canvas.width * 0.08, canvas.height * 0.1 + 5); // Adjusted position
+        ctx.fillText("80%", canvas.width * 0.08, canvas.height * 0.3 + 5); // Adjusted position
+        ctx.fillText("60%", canvas.width * 0.08, canvas.height * 0.5 + 5); // Adjusted position
+        ctx.fillText("40%", canvas.width * 0.08, canvas.height * 0.7 + 5); // Adjusted position
+        ctx.fillText("20%", canvas.width * 0.08, canvas.height * 0.9 + 5); // Adjusted position
+        ctx.fillText("0%", canvas.width * 0.08, canvas.height * 0.95 + 5); // Adjusted position
+
+        // Draw x-axis ticks
+        ctx.textAlign = "center";
+        ctx.fillText("1", canvas.width * 0.22, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("5", canvas.width * 0.37, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("9", canvas.width * 0.52, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("13", canvas.width * 0.67, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("17", canvas.width * 0.82, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("21", canvas.width * 0.97, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("24", canvas.width * 1.12, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("27", canvas.width * 1.27, canvas.height * 0.95 + 10); // Adjusted position
+        ctx.fillText("30", canvas.width * 1.42, canvas.height * 0.95 + 10); // Adjusted position
+    }
+
+    // Initial drawing of the chart
+    drawChart();
+});
+
 
 
 
