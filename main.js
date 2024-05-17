@@ -174,3 +174,70 @@ document.addEventListener("DOMContentLoaded", function() {
       popup.style.display = 'none';
   });
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Get elements
+  var applyButton = document.querySelector('.apply');
+  var popup = document.querySelector('.popup');
+  var closeButton = document.querySelector('.close-btn');
+  var countryPIN = {
+    "Georgia": "1111",
+    "Hungary": "2222",
+    "Israel": "3333",
+    "Serbia": "4444",
+    "South Africa": "5555",
+    "Turkey": "6666",
+    "Ukraine B": "7777",
+    "Ukraine K": "8888"
+  };
+
+  // Apply button click event
+  applyButton.addEventListener('click', function() {
+      // Show popup
+      popup.style.display = 'block';
+      // Get selected country
+      var selectedCountry = document.querySelector('.dropbtn').textContent.trim();
+      // Get PIN for selected country
+      var pinInput = document.querySelector('.pin-input');
+      pinInput.placeholder = 'Enter PIN for ' + selectedCountry;
+      pinInput.value = '';
+      pinInput.dataset.pin = countryPIN[selectedCountry];
+  });
+
+  // Close button click event
+  closeButton.addEventListener('click', function() {
+      // Hide popup
+      popup.style.display = 'none';
+  });
+
+  // Apply button in popup click event
+  var applyPopupButton = document.querySelector('.popup-container .apply-btn');
+  applyPopupButton.addEventListener('click', function() {
+      var pinInput = document.querySelector('.pin-input');
+      var enteredPIN = pinInput.value;
+      var correctPIN = pinInput.dataset.pin;
+      if (enteredPIN === correctPIN) {
+          alert('Data for selected country SAVED!');
+          // Close popup
+          popup.style.display = 'none';
+          // Set background color for selected day
+          var selectedDay = document.querySelector('.center-custom-day');
+          selectedDay.style.backgroundColor = '#DFF7E3';
+      } else {
+          alert('Invalid PIN country');
+      }
+  });
+
+  // Add event listener to each carousel item
+  var carouselItems = document.querySelectorAll('.custom-carousel-item');
+  carouselItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+          // Reset background color for all items
+          carouselItems.forEach(function(item) {
+              item.style.backgroundColor = '#fff'; // Reset background color
+          });
+          // Set background color for the clicked item
+          item.style.backgroundColor = '#DFF7E3';
+      });
+  });
+});
