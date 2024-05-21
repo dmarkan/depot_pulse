@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Depot Pulse</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- LOADING SCREEN -->
@@ -92,9 +93,6 @@
     <!-- APPLY BUTTON -->
     <button class="apply apply-btn" onclick="applyFilter()">APPLY</button>
 
-    <!-- CHART -->
-    <canvas id="chartCanvas"></canvas>
-
     <!-- Popup window -->
     <div class="popup" id="popup">
         <span class="close-btn" onclick="closePopup()">&times;</span>
@@ -105,6 +103,12 @@
             <button class="apply-btn apply" onclick="applyPopup()">Apply</button>
         </div>
     </div>
+
+    <!-- Chart -->
+<div class="chart-container">
+  <canvas id="myChart"></canvas>
+</div>
+
 
     <script src="main.js"></script>
 </body>

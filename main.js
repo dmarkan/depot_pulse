@@ -102,64 +102,6 @@ function calc() {
 }
 calc();
 
-// CHART
-document.addEventListener("DOMContentLoaded", function() {
-  var canvas = document.getElementById("chartCanvas");
-  var ctx = canvas.getContext("2d");
-
-  function setCanvasSize() {
-      var canvasWidth = window.innerWidth * 0.8;
-      var canvasHeight = window.innerHeight * 0.4;
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-  }
-
-  setCanvasSize();
-
-  window.addEventListener('resize', function() {
-      setCanvasSize();
-      drawChart();
-  });
-
-  function drawChart() {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.beginPath();
-      ctx.moveTo(canvas.width * 0.1, canvas.height * 0.1);
-      ctx.lineTo(canvas.width * 0.1, canvas.height * 0.9);
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(canvas.width * 0.1, canvas.height * 0.9);
-      ctx.lineTo(canvas.width * 0.9, canvas.height * 0.9);
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.font = "10px Arial";
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#000";
-      ctx.fillText("100%", canvas.width * 0.08, canvas.height * 0.1 + 5);
-      ctx.fillText("80%", canvas.width * 0.08, canvas.height * 0.3 + 5);
-      ctx.fillText("60%", canvas.width * 0.08, canvas.height * 0.5 + 5);
-      ctx.fillText("40%", canvas.width * 0.08, canvas.height * 0.7 + 5);
-      ctx.fillText("20%", canvas.width * 0.08, canvas.height * 0.9 + 5);
-      ctx.fillText("0%", canvas.width * 0.08, canvas.height * 0.95 + 5);
-
-      ctx.textAlign = "center";
-      var xPositions = [1, 5, 9, 13, 17, 21, 24, 27, 30];
-      var spacingFactor = 0.95 / 33;
-      xPositions.forEach(function(position) {
-          ctx.fillText(position, canvas.width * (0.1 + position * spacingFactor), canvas.height * 0.95 + 10);
-      });
-  }
-
-  drawChart();
-});
-
 // POPUP WINDOW
 document.addEventListener("DOMContentLoaded", function() {
   var applyButton = document.querySelector('.apply');
@@ -239,5 +181,65 @@ document.addEventListener("DOMContentLoaded", function() {
           // Set background color for the clicked item
           item.style.backgroundColor = '#DFF7E3';
       });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Initialize Chart.js
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line', // Use line chart to connect the dots
+      data: {
+          datasets: [{
+              label: 'Selected Data',
+              backgroundColor: '#34B4E3', // Dot color
+              data: [], // Data points will be added dynamically
+              pointRadius: 5, // Size of the dots
+              pointHoverRadius: 7, // Size of the dots on hover
+              borderColor: '#34B4E3', // Line color
+              borderWidth: 2, // Line width
+              fill: false // Disable fill under the line
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  type: 'linear', // Use linear scale for x-axis
+                  ticks: {
+                      stepSize: 1, // Step size between ticks
+                      precision: 0 // Number of decimal places
+                  }
+              },
+              y: {
+                  type: 'linear', // Use linear scale for y-axis
+                  min: 0, // Minimum value of y-axis
+                  max: 100, // Maximum value of y-axis
+                  ticks: {
+                      stepSize: 20, // Step size between ticks
+                      callback: function(value, index, values) {
+                          return value + '%'; // Append '%' to tick labels
+                      }
+                  }
+              }
+          }
+      }
+  });
+
+  // Function to update chart data based on selected day and percentage
+  function updateChart(day, percentage) {
+      // Add or update data point
+      myChart.data.datasets[0].data.push({x: day, y: percentage});
+      // Update the chart
+      myChart.update();
+  }
+
+  // Event listener for applying filter
+  document.querySelector('.apply').addEventListener('click', function() {
+      // Get selected day from carousel
+      var selectedDay = parseInt(document.querySelector('.center-custom-day').textContent);
+      // Get selected percentage from slider
+      var selectedPercentage = parseInt(document.getElementById('range').value);
+      // Update the chart with selected data
+      updateChart(selectedDay, selectedPercentage);
   });
 });
