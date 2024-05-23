@@ -118,119 +118,92 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Get elements
-  var applyButton = document.querySelector('.apply');
-  var popup = document.querySelector('.popup');
-  var closeButton = document.querySelector('.close-btn');
-  var countryPIN = {
-    "Georgia": "1111",
-    "Hungary": "2222",
-    "Israel": "3333",
-    "Serbia": "4444",
-    "South Africa": "5555",
-    "Turkey": "6666",
-    "Ukraine B": "7777",
-    "Ukraine K": "8888"
-  };
-
-  // Apply button click event
-  applyButton.addEventListener('click', function() {
-      // Show popup
-      popup.style.display = 'block';
-      // Get selected country
-      var selectedCountry = document.querySelector('.dropbtn').textContent.trim();
-      // Get PIN for selected country
-      var pinInput = document.querySelector('.pin-input');
-      pinInput.placeholder = 'Enter PIN for ' + selectedCountry;
-      pinInput.value = '';
-      pinInput.dataset.pin = countryPIN[selectedCountry];
-  });
-
-  // Close button click event
-  closeButton.addEventListener('click', function() {
-      // Hide popup
-      popup.style.display = 'none';
-  });
-
-  // Apply button in popup click event
-  var applyPopupButton = document.querySelector('.popup-container .apply-btn');
-  applyPopupButton.addEventListener('click', function() {
-      var pinInput = document.querySelector('.pin-input');
-      var enteredPIN = pinInput.value;
-      var correctPIN = pinInput.dataset.pin;
-      if (enteredPIN === correctPIN) {
-          alert('Data for selected country SAVED!');
-          // Close popup
-          popup.style.display = 'none';
-          // Set background color for selected day
-          var selectedDay = document.querySelector('.center-custom-day');
-          selectedDay.style.backgroundColor = '#DFF7E3';
-      } else {
-          alert('Invalid PIN country');
-      }
-  });
-
-  // Add event listener to each carousel item
-  var carouselItems = document.querySelectorAll('.custom-carousel-item');
-  carouselItems.forEach(function(item) {
-      item.addEventListener('click', function() {
-          // Reset background color for all items
-          carouselItems.forEach(function(item) {
-              item.style.backgroundColor = '#fff'; // Reset background color
-          });
-          // Set background color for the clicked item
-          item.style.backgroundColor = '#DFF7E3';
-      });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Initialize Chart.js
-  var ctx = document.getElementById('myChart').getContext('2d');
-  var myChart = new Chart(ctx, {
-      type: 'line', // Use line chart to connect the dots
-      data: {
-          datasets: [{
-              label: 'Selected Data',
-              backgroundColor: '#34B4E3', // Dot color
-              data: [], // Data points will be added dynamically
-              pointRadius: 5, // Size of the dots
-              pointHoverRadius: 7, // Size of the dots on hover
-              borderColor: '#34B4E3', // Line color
-              borderWidth: 2, // Line width
-              fill: false // Disable fill under the line
-          }]
-      },
-      options: {
-          scales: {
-              x: {
-                  type: 'linear', // Use linear scale for x-axis
-                  ticks: {
-                      stepSize: 1, // Step size between ticks
-                      precision: 0 // Number of decimal places
+  // Function to create a new Chart.js instance for a specific country
+  function createChart(country) {
+      var ctx = document.getElementById(`chart-${country}`).getContext('2d');
+      var chart = new Chart(ctx, {
+          type: 'line', // Use line chart to connect the dots
+          data: {
+              datasets: [{
+                  label: 'Selected Data',
+                  backgroundColor: '#34B4E3', // Dot color
+                  data: [], // Data points will be added dynamically
+                  pointRadius: 5, // Size of the dots
+                  pointHoverRadius: 7, // Size of the dots on hover
+                  borderColor: '#34B4E3', // Line color
+                  borderWidth: 2, // Line width
+                  fill: false // Disable fill under the line
+              }]
+          },
+          options: {
+              scales: {
+                  x: {
+                      type: 'linear', // Use linear scale for x-axis
+                      ticks: {
+                          stepSize: 1, // Step size between ticks
+                          precision: 0 // Number of decimal places
+                      }
+                  },
+                  y: {
+                      type: 'linear', // Use linear scale for y-axis
+                      min: 0, // Minimum value of y-axis
+                      max: 100, // Maximum value of y-axis
+                      ticks: {
+                          stepSize: 20, // Step size between ticks
+                          callback: function(value) {
+                              return value + '%'; // Append '%' to tick labels
+                          }
+                      }
                   }
               },
-              y: {
-                  type: 'linear', // Use linear scale for y-axis
-                  min: 0, // Minimum value of y-axis
-                  max: 100, // Maximum value of y-axis
-                  ticks: {
-                      stepSize: 20, // Step size between ticks
-                      callback: function(value, index, values) {
-                          return value + '%'; // Append '%' to tick labels
+              plugins: {
+                  title: {
+                      display: true,
+                      text: '',
+                      position: 'bottom',
+                      align: 'start',
+                      color: '#082E6A', // Set text color
+                      font: {
+                          size: 16,
+                          weight: 'bold'
+                      },
+                      padding: {
+                          top: 10,
+                          left: 0,
+                          right: 0,
+                          bottom: 0
                       }
                   }
               }
           }
-      }
-  });
+      });
+      return chart;
+  }
 
   // Function to update chart data based on selected day and percentage
-  function updateChart(day, percentage) {
+  function updateChart(chart, day, percentage) {
       // Add or update data point
-      myChart.data.datasets[0].data.push({x: day, y: percentage});
+      chart.data.datasets[0].data.push({ x: day, y: percentage });
       // Update the chart
-      myChart.update();
+      chart.update();
+  }
+
+  // Function to save data to local storage
+  function saveData(country, month, chart) {
+      var chartData = chart.data.datasets[0].data;
+      var savedData = JSON.parse(localStorage.getItem(country)) || {};
+      savedData[month] = chartData;
+      localStorage.setItem(country, JSON.stringify(savedData));
+  }
+
+  // Function to load data from local storage
+  function loadData(country, month, chart) {
+      var savedData = JSON.parse(localStorage.getItem(country)) || {};
+      var chartData = savedData[month];
+      if (chartData) {
+          chart.data.datasets[0].data = chartData;
+          chart.update();
+      }
   }
 
   // Event listener for applying filter
@@ -239,7 +212,124 @@ document.addEventListener("DOMContentLoaded", function() {
       var selectedDay = parseInt(document.querySelector('.center-custom-day').textContent);
       // Get selected percentage from slider
       var selectedPercentage = parseInt(document.getElementById('range').value);
+      // Get selected country
+      var selectedCountry = document.querySelector('.dropbtn').textContent.trim();
+      // Get selected month
+      var selectedMonth = document.getElementById('carousel-item').textContent.trim();
+      // Get chart for the selected country
+      var chart = charts[selectedCountry];
       // Update the chart with selected data
-      updateChart(selectedDay, selectedPercentage);
+      updateChart(chart, selectedDay, selectedPercentage);
+      // Save the data to local storage
+      saveData(selectedCountry, selectedMonth, chart);
   });
+
+  // Function to check PIN and load data
+  function checkPIN() {
+      var pinInput = document.querySelector('.pin-input');
+      var enteredPIN = pinInput.value;
+      var selectedCountry = document.querySelector('.dropbtn').textContent.trim();
+      var correctPINs = {
+          "Georgia": "1111",
+          "Hungary": "2222",
+          "Israel": "3333",
+          "Serbia": "4444",
+          "South Africa": "5555",
+          "Turkey": "6666",
+          "Ukraine B": "7777",
+          "Ukraine K": "8888"
+      };
+      var correctPIN = correctPINs[selectedCountry];
+
+      if (enteredPIN === correctPIN) {
+          alert('Data for selected country SAVED!');
+          // Close popup
+          document.querySelector('.popup').style.display = 'none';
+          // Load data from local storage
+          var selectedMonth = document.getElementById('carousel-item').textContent.trim();
+          loadData(selectedCountry, selectedMonth, charts[selectedCountry]);
+          return true;
+      } else {
+          alert('Invalid PIN for selected country');
+          return false;
+      }
+  }
+
+  // Event listener for the Apply button in the popup
+  document.querySelector('.popup-container .apply-btn').addEventListener('click', checkPIN);
+
+  // Set the slider color
+  var rangeSlider = document.getElementById('range');
+  rangeSlider.style.backgroundColor = '#808080'; // Set slider color
+
+  // Update slider track color
+  rangeSlider.addEventListener('input', function() {
+      var value = (rangeSlider.value - rangeSlider.min) / (rangeSlider.max - rangeSlider.min) * 100;
+      rangeSlider.style.background = `linear-gradient(to right, #34B4E3 ${value}%, #808080 ${value}%)`;
+  });
+
+  // Function to delete all data from local storage
+  function deleteAllData() {
+      localStorage.clear();
+      alert('All data has been deleted.');
+      // Clear all charts
+      for (var country in charts) {
+          charts[country].data.datasets[0].data = [];
+          charts[country].update();
+      }
+  }
+
+  // Create Delete button
+  var deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+  deleteButton.style.position = 'fixed';
+  deleteButton.style.bottom = '10px';
+  deleteButton.style.right = '10px';
+  deleteButton.style.backgroundColor = '#f44336';
+  deleteButton.style.color = '#fff';
+  deleteButton.style.border = 'none';
+  deleteButton.style.padding = '10px';
+  deleteButton.style.cursor = 'pointer';
+  deleteButton.style.borderRadius = '5px';
+  document.body.appendChild(deleteButton);
+
+  // Add event listener to Delete button
+  deleteButton.addEventListener('click', deleteAllData);
+
+  // Object to store all charts
+  var charts = {};
+
+  // Add event listener to country dropdown menu
+  var countryDropdownItems = document.querySelectorAll('.dropdown-content a');
+  countryDropdownItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        var selectedCountry = item.textContent.trim();
+        // Create a new chart if not already created
+        if (!charts[selectedCountry]) {
+            var chartContainer = document.createElement('div');
+            chartContainer.setAttribute('class', 'chart-container');
+            chartContainer.innerHTML = `<canvas id="chart-${selectedCountry}"></canvas>`;
+            document.body.appendChild(chartContainer);
+            charts[selectedCountry] = createChart(selectedCountry);
+        }
+        document.querySelector('.dropbtn').textContent = selectedCountry;
+        // Hide all charts except the one for the selected country
+        for (var country in charts) {
+            if (country === selectedCountry) {
+                document.getElementById(`chart-${country}`).style.display = 'block';
+            } else {
+                document.getElementById(`chart-${country}`).style.display = 'none';
+            }
+        }
+        // Load data for the selected country
+        var selectedMonth = document.getElementById('carousel-item').textContent.trim();
+        loadData(selectedCountry, selectedMonth, charts[selectedCountry]);
+    });
 });
+
+// Initial load for the selected country
+var defaultCountry = "Georgia"; // Set your default country here
+charts[defaultCountry] = createChart(defaultCountry);
+loadData(defaultCountry, '', charts[defaultCountry]);
+});
+
