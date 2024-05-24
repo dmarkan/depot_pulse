@@ -1,0 +1,55 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.logo {
+  width: 20%; /* Reduce the size to 20% */
+  max-width: 200px; /* Add a max-width to maintain aspect ratio */
+  margin-top: 10%; /* Move the logo 10% from the top of the page */
+  margin-left: 40%; /* Horizontally center the logo */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80%; /* Adjust as needed */
+}
+
+h2 {
+  margin-top: 20px;
+  color: #082E6A; /* Change the color of the "LOG IN" text */
+}
+
+form {
+  margin-top: 20px;
+  text-align: center;
+}
+
+input[type="email"],
+input[type="password"],
+button {
+  width: 300px;
+  padding: 10px;
+  margin: 5px auto; /* Center horizontally */
+  display: block; /* Ensure each element is on its own line */
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Rounded edges */
+}
+
+button {
+  background-color: transparent;
+  color: #3399FF; /* Change the color of the button text */
+  border: 1px solid #3399FF; /* Border color */
+  border-radius: 20px; /* Rounded edges */
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3399FF;
+  color: #fff; /* Change text color on hover */
+}
