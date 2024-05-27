@@ -7,15 +7,43 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Logo -->
   <img src="images/oximio_logo.jpg" alt="Depot Pulse Logo" class="logo">
-  <div class="container">
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="container">
     <h2>LOG IN</h2>
     <form id="login-form">
       <input type="email" id="email" placeholder="Email" required><br>
       <input type="password" id="password" placeholder="Password" required><br>
       <button type="submit">LOG IN</button>
     </form>
+    <div id="error-message" class="error-message"></div>
   </div>
+
+  <!-- Main Screen -->
+  <div id="main-screen" class="next-screen" style="display:none;">
+    <div class="dropdown">
+      <button class="dropdown-button">Select Country</button>
+    </div>
+  </div>
+
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <img src="images/depot_pulse_icon.png" alt="Depot Pulse Icon" class="popup-icon">
+      <ul class="country-list">
+        <li><img src="images/georgia-flag.png" alt="Georgia Flag"> Georgia</li>
+        <li><img src="images/hungary-flag.png" alt="Hungary Flag"> Hungary</li>
+        <li><img src="images/israel-flag.png" alt="Israel Flag"> Israel</li>
+        <li><img src="images/serbia-flag.png" alt="Serbia Flag"> Serbia</li>
+        <li><img src="images/south_africa-flag.png" alt="South Africa Flag"> South Africa</li>
+        <li><img src="images/turkiye-flag.png" alt="Turkiye Flag"> Turkiye</li>
+        <li><img src="images/ukraine_b-flag.png" alt="Ukraine B Flag"> Ukraine B</li>
+        <li><img src="images/ukraine_k-flag.png" alt="Ukraine K Flag"> Ukraine K</li>
+      </ul>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
