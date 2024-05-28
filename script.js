@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownButton = document.querySelector('.dropdown-button');
     const popup = document.getElementById('popup');
     const logo = document.querySelector('.logo');
+    const closeButton = document.querySelector('.close-icon');
   
     // Check if credentials are stored in localStorage for local testing
     const storedEmail = localStorage.getItem('email');
@@ -86,5 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
         popup.style.display = 'none'; // Hide the popup
       }
     });
-  });
   
+    // Handle close icon click
+    closeButton.addEventListener('click', function() {
+      popup.style.display = 'none'; // Hide the popup
+    });
+});

@@ -1,9 +1,12 @@
+/* Add this CSS to your existing stylesheet or create a new one */
+
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
   position: relative; /* Ensure body acts as a reference for absolute positioning */
+  color: #082E6A; /* Change the color of all text */
 }
 
 .logo {
@@ -25,7 +28,6 @@ body, html {
 
 h2 {
   margin-top: 20px;
-  color: #082E6A; /* Change the color of the "LOG IN" text */
 }
 
 form {
@@ -36,7 +38,7 @@ form {
 input[type="email"],
 input[type="password"],
 button {
-  width: 300px;
+  width: auto; /* Set width to auto to fit the text */
   padding: 10px;
   margin: 5px auto; /* Center horizontally */
   display: block; /* Ensure each element is on its own line */
@@ -47,14 +49,21 @@ button {
 button {
   background-color: transparent;
   color: #3399FF; /* Change the color of the button text */
-  border: 1px solid #3399FF; /* Border color */
-  border-radius: 20px; /* Rounded edges */
+  border: none; /* Remove the border */
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #3399FF;
-  color: #fff; /* Change text color on hover */
+button.dropdown-button:hover {
+  color: #3399FF; /* Highlight the text color on hover */
+}
+
+.dropdown-text {
+  margin-right: 5px; /* Add margin to the right */
+}
+
+button.dropdown-button .dropdown-icon {
+  margin-left: 5px;
+  color: #3399FF; /* Change the color of the dropdown icon */
 }
 
 .error-message {
@@ -76,10 +85,21 @@ button:hover {
 }
 
 .popup-content {
+  position: relative; /* To position the close icon relative to the popup content */
+  width: 80%; /* Set the width to 80% of the main screen */
+  max-width: 800px; /* Ensure it doesn't get too large on very wide screens */
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .popup-icon {
@@ -88,10 +108,18 @@ button:hover {
   margin-bottom: 20px;
 }
 
+.popup-header {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
 .country-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the countries horizontally */
 }
 
 .country-list li {
