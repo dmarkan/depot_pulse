@@ -1,3 +1,5 @@
+/* styles.css */
+
 body, html {
   margin: 0;
   padding: 0;
@@ -34,13 +36,48 @@ form {
 }
 
 input[type="email"],
-input[type="password"],
-button {
+input[type="password"] {
   width: 300px;
-  padding: 10px;
+  padding: 10px 20px; /* Adjust padding */
   display: block;
-  border: 1px solid #ccc;
-  border-radius: 20px;
+  border: 1px solid #ccc; /* Standard grey border */
+  border-radius: 20px; /* Rounded edges */
+  background-color: transparent; /* Transparent background */
+  color: #3399FF; /* Text color */
+  cursor: pointer;
+  transition: border-color 0.3s ease; /* Only transition border color */
+  margin: 0 auto; /* Center the button horizontally */
+}
+
+/* Set border color on hover and focus */
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #3399FF; /* Border color on hover and focus */
+}
+
+button[type="submit"] {
+  width: 300px;
+  padding: 10px 20px; /* Adjust padding */
+  display: block;
+  border: 1px solid #3399FF; /* Border color for the login button */
+  border-radius: 20px; /* Rounded edges */
+  background-color: transparent; /* Transparent background */
+  color: #3399FF; /* Text color */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition background and text color */
+  margin: 0 auto; /* Center the button horizontally */
+}
+
+button[type="submit"]:hover {
+  background-color: #3399FF; /* Background color on hover */
+  color: #fff; /* Text color on hover */
+}
+
+input[type="email"],
+input[type="password"] {
+  color: black; /* Input text color */
 }
 
 button {
@@ -62,7 +99,7 @@ button.profile-button:hover {
 button.dropdown-button .dropdown-icon,
 button.profile-button .profile-icon {
   margin-left: 5px;
-  fill: #3399FF;
+  fill: #082E6A;
 }
 
 .error-message {
@@ -152,7 +189,7 @@ button.profile-button .profile-icon {
   align-items: center;
   padding: 10px;
   background-color: transparent;
-  color: #3399FF;
+  color: #082E6A;
   border: none;
   cursor: pointer;
   border-radius: 20px;
@@ -163,7 +200,7 @@ button.profile-button .profile-icon {
 }
 
 .profile-icon {
-  fill: #3399FF;
+  fill: #082E6A;
   margin-right: 5px;
 }
 
@@ -180,4 +217,27 @@ button.profile-button .profile-icon {
 .logout-button:hover {
   background-color: #3399FF;
   color: #fff;
+}
+
+.month-carousel {
+  display: flex;
+  justify-content: center
+  ;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.month-display {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 10px;
+  color: #082E6A; /* Change text color */
+}
+
+.carousel-btn {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0 5px; /* Adjust arrow position */
+  color: #082E6A; /* Change arrow color */
 }

@@ -106,4 +106,40 @@ document.addEventListener('DOMContentLoaded', function() {
             countryPopup.style.display = 'none';
         });
     });
-});
+})
+
+const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  
+  let currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+  
+  const monthDisplay = document.getElementById('monthDisplay');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  function displayMonth() {
+    monthDisplay.textContent = months[currentMonth] + ' ' + currentYear;
+  }
+  
+  displayMonth();
+  
+  prevBtn.addEventListener('click', () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    displayMonth();
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    displayMonth();
+  });
