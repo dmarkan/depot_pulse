@@ -23,27 +23,46 @@
 
   <!-- Main Screen -->
   <div id="main-screen" class="next-screen" style="display:none;">
-    <div class="dropdown">
+    <div class="header">
       <button class="dropdown-button">Select Country<span class="dropdown-icon">&#9660;</span></button>
+      <button class="profile-button">
+        <svg class="profile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        My Profile
+      </button>
     </div>
   </div>
 
-  <!-- Popup Content -->
-  <div id="popup" class="popup">
+  <div id="country-popup" class="popup">
     <div class="popup-content">
       <span class="close-icon">&times;</span>
       <img src="images/depot_pulse_icon.png" alt="Depot Pulse Icon" class="popup-icon">
-      <h3 class="popup-header">Select Country</h3>
-      <ul class="country-list">
-        <li><img src="images/georgia-flag.png" alt="Georgia Flag"> Georgia</li>
-        <li><img src="images/hungary-flag.png" alt="Hungary Flag"> Hungary</li>
-        <li><img src="images/israel-flag.png" alt="Israel Flag"> Israel</li>
-        <li><img src="images/serbia-flag.png" alt="Serbia Flag"> Serbia</li>
-        <li><img src="images/south_africa-flag.png" alt="South Africa Flag"> South Africa</li>
-        <li><img src="images/turkiye-flag.png" alt="Turkiye Flag"> Turkiye</li>
-        <li><img src="images/ukraine_b-flag.png" alt="Ukraine B Flag"> Ukraine B</li>
-        <li><img src="images/ukraine_k-flag.png" alt="Ukraine K Flag"> Ukraine K</li>
-      </ul>
+      <div class="popup-header">Select Country</div>
+      <div class="country-list-container">
+        <ul class="country-list">
+          <li><img src="images/georgia-flag.png" alt="Georgia Flag"> Georgia</li>
+          <li><img src="images/hungary-flag.png" alt="Hungary Flag"> Hungary</li>
+          <li><img src="images/israel-flag.png" alt="Israel Flag"> Israel</li>
+          <li><img src="images/serbia-flag.png" alt="Serbia Flag"> Serbia</li>
+          <li><img src="images/south_africa-flag.png" alt="South Africa Flag"> South Africa</li>
+          <li><img src="images/turkiye-flag.png" alt="Turkiye Flag"> Turkiye</li>
+          <li><img src="images/ukraine_b-flag.png" alt="Ukraine B Flag"> Ukraine B</li>
+          <li><img src="images/ukraine_k-flag.png" alt="Ukraine K Flag"> Ukraine K</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="profile-popup" class="popup">
+    <div class="popup-content">
+      <span class="close-icon">&times;</span>
+      <img src="images/depot_pulse_icon.png" alt="Depot Pulse Icon" class="popup-icon">
+      <div class="popup-header">My Profile</div>
+      <div class="profile-info">
+        <p><span id="profile-email"></span></p>
+        <button id="logout-button" class="logout-button">LOG OUT</button>
+      </div>
     </div>
   </div>
 

@@ -1,21 +1,19 @@
-/* Add this CSS to your existing stylesheet or create a new one */
-
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
-  position: relative; /* Ensure body acts as a reference for absolute positioning */
-  color: #082E6A; /* Change the color of all text */
+  position: relative;
+  color: #082E6A;
 }
 
 .logo {
-  width: 20%; /* Reduce the size to 20% */
-  max-width: 200px; /* Add a max-width to maintain aspect ratio */
-  position: absolute; /* Position absolutely */
-  top: 5%; /* Move the logo 5% from the top of the page */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Adjust to center horizontally */
+  width: 20%;
+  max-width: 200px;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .container {
@@ -23,7 +21,7 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%; /* Center the container vertically */
+  height: 100%;
 }
 
 h2 {
@@ -38,32 +36,33 @@ form {
 input[type="email"],
 input[type="password"],
 button {
-  width: auto; /* Set width to auto to fit the text */
+  width: 300px;
   padding: 10px;
-  margin: 5px auto; /* Center horizontally */
-  display: block; /* Ensure each element is on its own line */
+  display: block;
   border: 1px solid #ccc;
-  border-radius: 20px; /* Rounded edges */
+  border-radius: 20px;
 }
 
 button {
   background-color: transparent;
-  color: #3399FF; /* Change the color of the button text */
-  border: none; /* Remove the border */
+  color: #3399FF;
+  border: none;
   cursor: pointer;
 }
 
-button.dropdown-button:hover {
-  color: #3399FF; /* Highlight the text color on hover */
+button.dropdown-button:hover,
+button.profile-button:hover {
+  color: #3399FF;
 }
 
 .dropdown-text {
-  margin-right: 5px; /* Add margin to the right */
+  margin-right: 5px;
 }
 
-button.dropdown-button .dropdown-icon {
+button.dropdown-button .dropdown-icon,
+button.profile-button .profile-icon {
   margin-left: 5px;
-  color: #3399FF; /* Change the color of the dropdown icon */
+  fill: #3399FF;
 }
 
 .error-message {
@@ -72,7 +71,7 @@ button.dropdown-button .dropdown-icon {
 }
 
 .popup {
-  display: none; /* Hidden by default */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -85,9 +84,9 @@ button.dropdown-button .dropdown-icon {
 }
 
 .popup-content {
-  position: relative; /* To position the close icon relative to the popup content */
-  width: 80%; /* Set the width to 80% of the main screen */
-  max-width: 800px; /* Ensure it doesn't get too large on very wide screens */
+  position: relative;
+  width: 80%;
+  max-width: 800px;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -113,13 +112,18 @@ button.dropdown-button .dropdown-icon {
   margin-bottom: 10px;
 }
 
+.country-list-container {
+  display: flex;
+  justify-content: center;
+}
+
 .country-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the countries horizontally */
+  align-items: flex-start;
 }
 
 .country-list li {
@@ -132,4 +136,48 @@ button.dropdown-button .dropdown-icon {
   width: 30px;
   height: auto;
   margin-right: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-button,
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: transparent;
+  color: #3399FF;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px;
+  font-size: 16px;
+  white-space: nowrap;
+  width: auto;
+  margin: 0;
+}
+
+.profile-icon {
+  fill: #3399FF;
+  margin-right: 5px;
+}
+
+.logout-button {
+  border: 1px solid #3399FF;
+  border-radius: 20px;
+  background-color: transparent;
+  color: #3399FF;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #3399FF;
+  color: #fff;
 }
