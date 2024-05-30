@@ -287,4 +287,66 @@ document.addEventListener('DOMContentLoaded', function() {
   nextDayBtn.addEventListener('click', () => {
     updateDay(currentDay + 1);
   });
+
+  // Slider Logic
+  const rangeSlider = document.getElementById('rangeSlider');
+  const sliderPercentage = document.getElementById('sliderPercentage');
+  
+  rangeSlider.addEventListener('input', function() {
+    const value = rangeSlider.value;
+    sliderPercentage.textContent = value + '%';
+  });
+
+  function savePercentage(percentage) {
+    // Backend integration: Replace this comment with code to send selected percentage to the backend
+    // Example code for sending data to backend using fetch API:
+    /*
+    fetch('/save-percentage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ percentage: percentage })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    */
+  }
+
+  // Apply Button Logic
+  const applyButton = document.getElementById('applyButton');
+
+  applyButton.addEventListener('click', function() {
+    const selectedPercentage = rangeSlider.value;
+    savePercentage(selectedPercentage); // Save the selected percentage
+
+    const selectedMonth = currentMonth + 1;
+    const selectedYear = currentYear;
+    const selectedDay = currentDay;
+
+    // Backend integration: Replace this comment with code to send selected month, year, and day to the backend
+    // Example code for sending data to backend using fetch API:
+    /*
+    fetch('/save-date', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ month: selectedMonth, year: selectedYear, day: selectedDay })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    */
+  });
 });
+
