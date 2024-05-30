@@ -1,5 +1,3 @@
-/* styles.css */
-
 body, html {
   margin: 0;
   padding: 0;
@@ -36,38 +34,22 @@ form {
 }
 
 input[type="email"],
-input[type="password"] {
-  width: 300px;
-  padding: 10px 20px; /* Adjust padding */
-  display: block;
-  border: 1px solid #ccc; /* Standard grey border */
-  border-radius: 20px; /* Rounded edges */
-  background-color: transparent; /* Transparent background */
-  color: #3399FF; /* Text color */
-  cursor: pointer;
-  transition: border-color 0.3s ease; /* Only transition border color */
-  margin: 0 auto; /* Center the button horizontally */
-}
-
-/* Set border color on hover and focus */
-input[type="email"]:hover,
-input[type="password"]:hover,
-input[type="email"]:focus,
-input[type="password"]:focus {
-  border-color: #3399FF; /* Border color on hover and focus */
-}
-
+input[type="password"],
 button[type="submit"] {
   width: 300px;
   padding: 10px 20px; /* Adjust padding */
   display: block;
-  border: 1px solid #3399FF; /* Border color for the login button */
+  border: 1px solid #808080; /* Grey border for input fields */
   border-radius: 20px; /* Rounded edges */
   background-color: transparent; /* Transparent background */
   color: #3399FF; /* Text color */
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Transition background and text color */
+  transition: background-color 0.3s ease;
   margin: 0 auto; /* Center the button horizontally */
+}
+
+button[type="submit"] {
+  border: 1px solid #3399FF; /* Blue border for button */
 }
 
 button[type="submit"]:hover {
@@ -219,25 +201,52 @@ button.profile-button .profile-icon {
   color: #fff;
 }
 
-.month-carousel {
+.month-carousel,
+.day-carousel {
   display: flex;
-  justify-content: center
-  ;
   align-items: center;
-  margin-top: 50px;
-}
-
-.month-display {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 10px;
-  color: #082E6A; /* Change text color */
+  justify-content: center;
+  margin: 20px 0;
 }
 
 .carousel-btn {
-  font-size: 20px;
-  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
   cursor: pointer;
-  margin: 0 5px; /* Adjust arrow position */
-  color: #082E6A; /* Change arrow color */
+  color: #082E6A;
 }
+
+.month-display,
+.day-display {
+  margin: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #082E6A;
+}
+
+.days-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.days-container div {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px; /* Reduce margin to fit 5 slides */
+  border: 1px solid #082E6A; /* Default border */
+  border-radius: 5px;
+  font-size: 16px;
+  color: #082E6A;
+}
+
+.days-container div.center-slide {
+  border-width: 3px; /* Increase border thickness for the center slide */
+}
+
+
