@@ -348,5 +348,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     */
   });
+
+   // Chart Data
+   const data = {
+    labels: [1, 5, 9, 13, 17, 21, 24, 27, 30],
+    datasets: [{
+        label: 'Percentage',
+        data: [0, 20, 40, 60, 80, 100],
+        borderColor: '#34B4E3',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 0
+    }]
+};
+
+// Chart Options
+const options = {
+    plugins: {
+        legend: {
+            display: false // Hide legend
+        }
+    },
+    layout: {
+        padding: {
+            left: 20,   // Adjust the margin size as needed
+            right: 20,  // Adjust the margin size as needed
+            top: 0,
+            bottom: 0
+        }
+    },
+    scales: {
+        x: {
+            title: {
+                display: false // Hide X axis title
+            },
+            ticks: {
+                color: '#082E6A',
+            }
+        },
+        y: {
+            title: {
+                display: false // Hide Y axis title
+            },
+            ticks: {
+                callback: function(value) {
+                    return value + '%';
+                },
+                color: '#082E6A',
+            }
+        }
+    }
+};
+
+// Create Chart
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options
 });
+});
+
 
