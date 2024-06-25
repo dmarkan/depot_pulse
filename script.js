@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Hard-coded credentials for local testing. To be replaced with backend validation.
     const validEmail = 'admin@oximio.com';
-    const validPassword = 'admin';
+    const validPassword = 'admin123';
 
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
@@ -19,71 +18,65 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileEmail = document.getElementById('profile-email');
     const countryList = document.querySelectorAll('.country-list li');
 
-    // Check if credentials are stored in localStorage for local testing
     const storedEmail = localStorage.getItem('email');
     const storedPassword = localStorage.getItem('password');
 
-    // Remove or modify this part when integrating with backend
+    let selectedCountry = 'Georgia';
+
+    // Check for stored credentials
     if (storedEmail === validEmail && storedPassword === validPassword) {
-        // Show main screen if credentials are valid
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
-        logo.style.display = 'none'; // Hide the logo
+        logo.style.display = 'none';
     } else {
-        // Show login screen if no valid credentials are stored
         loginScreen.style.display = 'flex';
         mainScreen.style.display = 'none';
     }
 
     // Handle login form submission
     loginForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
         const email = emailInput.value;
         const password = passwordInput.value;
 
-        // Temporary local validation for testing purposes
         if (email === validEmail && password === validPassword) {
-            // Local storage for local testing
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
 
-            // Redirect to the main screen
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
-            logo.style.display = 'none'; // Hide the logo
+            logo.style.display = 'none';
         } else {
-            // Show error message
             errorMessage.textContent = 'Incorrect email or password';
         }
     });
 
-    // Handle dropdown button click
+    // Show country selection popup
     dropdownButton.addEventListener('click', function() {
-        countryPopup.style.display = 'flex'; // Show the country popup
+        countryPopup.style.display = 'flex';
     });
 
-    // Handle profile button click
+    // Show profile popup
     profileButton.addEventListener('click', function() {
         profileEmail.textContent = `${storedEmail}`;
-        profilePopup.style.display = 'flex'; // Show the profile popup
+        profilePopup.style.display = 'flex';
     });
 
-    // Handle close icon click for country popup
+    // Close popups
     closeButton[0].addEventListener('click', function() {
-        countryPopup.style.display = 'none'; // Hide the country popup
+        countryPopup.style.display = 'none';
     });
 
-    // Handle close icon click for profile popup
     closeButton[1].addEventListener('click', function() {
-        profilePopup.style.display = 'none'; // Hide the profile popup
+        profilePopup.style.display = 'none';
     });
 
-    // Handle logout button click
+    // Logout
     logoutButton.addEventListener('click', function() {
         localStorage.removeItem('email');
         localStorage.removeItem('password');
-        window.location.reload(); // Refresh the page after logout
+        window.location.reload();
     });
 
     // Handle country selection
@@ -92,22 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const countryName = countryItem.textContent.trim();
             const countryFlag = countryItem.querySelector('img').cloneNode(true);
 
-            // Resize the flag image to fit inside the button
-            countryFlag.style.width = '20px'; // Adjust the width as needed
-            countryFlag.style.height = 'auto'; // Maintain aspect ratio
+            countryFlag.style.width = '20px';
+            countryFlag.style.height = 'auto';
 
-            // Replace text in dropdown button with country flag and name
             dropdownButton.innerHTML = '';
             dropdownButton.appendChild(countryFlag);
             dropdownButton.insertAdjacentText('beforeend', countryName);
             dropdownButton.insertAdjacentHTML('beforeend', '<span class="dropdown-icon">&#9660;</span>');
 
-            // Hide the country popup
             countryPopup.style.display = 'none';
+
+            selectedCountry = countryName;
+            loadChartData();
         });
     });
 
-    // Month Carousel Logic
+    // Month navigation and display
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -126,28 +119,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function saveMonth() {
         const selectedMonth = {
-            month: currentMonth + 1, // Month index to human-readable month (1-12)
+            month: currentMonth + 1,
             year: currentYear
         };
 
-        // Backend integration: Replace this comment with code to send selected month to the backend
-        // Example code for sending data to backend using fetch API:
-        /*
-        fetch('/save-month', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(selectedMonth)
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        */
+        // Backend integration placeholder
     }
 
     displayMonth();
@@ -159,7 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
             currentYear--;
         }
         displayMonth();
-        saveMonth(); // Save the selected month and year
+        saveMonth();
+        loadChartData();
     });
 
     nextMonthBtn.addEventListener('click', () => {
@@ -169,10 +146,11 @@ document.addEventListener('DOMContentLoaded', function() {
             currentYear++;
         }
         displayMonth();
-        saveMonth(); // Save the selected month and year
+        saveMonth();
+        loadChartData();
     });
 
-    // Day Carousel Logic
+    // Day navigation and display
     const daysContainer = document.getElementById('daysContainer');
     const prevDayBtn = document.getElementById('prevDayBtn');
     const nextDayBtn = document.getElementById('nextDayBtn');
@@ -187,14 +165,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let endDay = startDay + 4;
         if (endDay > daysInMonth) {
             endDay = daysInMonth;
-            startDay = endDay - 4; // Adjust startDay to ensure 5 slides are visible
+            startDay = endDay - 4;
             if (startDay < 1) startDay = 1;
         }
         for (let i = startDay; i <= endDay; i++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = i;
             if (i === currentDay) {
-                dayElement.classList.add('center-slide'); // Add class to center slide
+                dayElement.classList.add('center-slide');
             }
             daysContainer.appendChild(dayElement);
             dayElement.addEventListener('click', () => {
@@ -228,28 +206,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function saveDay() {
         const selectedDay = {
             day: currentDay,
-            month: currentMonth + 1, // Month index to human-readable month (1-12)
+            month: currentMonth + 1,
             year: currentYear
         };
 
-        // Backend integration: Replace this comment with code to send selected day to the backend
-        // Example code for sending data to backend using fetch API:
-        /*
-        fetch('/save-day', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(selectedDay)
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        */
+        // Backend integration placeholder
     }
 
     generateDays();
@@ -262,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDay(currentDay + 1);
     });
 
-    // Slider Logic
+    // Range slider functionality
     const rangeSlider = document.getElementById('rangeSlider');
     const sliderPercentage = document.getElementById('sliderPercentage');
 
@@ -272,77 +233,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function savePercentage(percentage) {
-        // Backend integration: Replace this comment with code to send selected percentage to the backend
-        // Example code for sending data to backend using fetch API:
-        /*
-        fetch('/save-percentage', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ percentage: percentage })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        */
+        // Backend integration placeholder
     }
 
-    // Apply Button Logic
     const applyButton = document.getElementById('applyButton');
 
     applyButton.addEventListener('click', function() {
         const selectedPercentage = rangeSlider.value;
-        savePercentage(selectedPercentage); // Save the selected percentage
+        savePercentage(selectedPercentage);
 
         const selectedMonth = currentMonth + 1;
         const selectedYear = currentYear;
         const selectedDay = currentDay;
 
-        // Backend integration: Replace this comment with code to send selected month, year, and day to the backend
-        // Example code for sending data to backend using fetch API:
-        /*
-        fetch('/save-date', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ month: selectedMonth, year: selectedYear, day: selectedDay })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        */
+        // Backend integration placeholder
 
-        // Add the selected day and percentage to the chart
         addDataToChart(selectedDay, selectedPercentage);
     });
 
-    // Chart Data and Options
+    // Chart data management
+    const monthlyData = {};
+
+    function getMonthlyDataKey() {
+        return `${selectedCountry}-${currentYear}-${currentMonth + 1}`;
+    }
+
+    function loadChartData() {
+        const key = getMonthlyDataKey();
+        const monthData = monthlyData[key] || { labels: [], data: [] };
+        
+        myChart.data.labels = monthData.labels;
+        myChart.data.datasets[0].data = monthData.data;
+        myChart.update();
+
+        const selectedMonthLabel = document.getElementById('selectedMonthLabel');
+        selectedMonthLabel.textContent = `${months[currentMonth].slice(0, 3)}`;
+    }
+
     const data = {
-        labels: [new Date().getDate()], // Initialize with today's day
+        labels: [],
         datasets: [{
             label: 'Percentage',
-            data: [0], // Initialize with 0%
+            data: [],
             borderColor: '#34B4E3',
-            backgroundColor: '#34B4E3', // Color of the points and line
-            borderWidth: 2, // Increase border width to make line visible
-            pointRadius: 5, // Size of the points
-            pointBackgroundColor: '#34B4E3', // Color of the points
-            pointBorderColor: '#34B4E3', // Border color of the points
-            pointHoverRadius: 7, // Size of the points on hover
-            pointHoverBackgroundColor: '#34B4E3', // Color of the points on hover
-            pointHoverBorderColor: '#34B4E3', // Border color of the points on hover
-            pointHitRadius: 10, // Size of the points on hit (interaction)
-            pointBorderWidth: 2 // Border width of the points
+            backgroundColor: '#34B4E3',
+            borderWidth: 2,
+            pointRadius: 5,
+            pointBackgroundColor: '#34B4E3',
+            pointBorderColor: '#34B4E3',
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: '#34B4E3',
+            pointHoverBorderColor: '#34B4E3',
+            pointHitRadius: 10,
+            pointBorderWidth: 2
         }]
     };
 
@@ -352,18 +295,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 callbacks: {
                     label: function(tooltipItem) {
                         const day = tooltipItem.label;
-                        return `Day: ${day}, Month: ${months[currentMonth]}, Year: ${currentYear}`; // Customize tooltip to show day, month, year
+                        return `Day: ${day}, Month: ${months[currentMonth]}, Year: ${currentYear}`;
                     }
                 }
             },
             legend: {
-                display: false // Hide legend
+                display: false
             }
         },
         layout: {
             padding: {
-                left: 20,   // Adjust the margin size as needed
-                right: 20,  // Adjust the margin size as needed
+                left: 20,
+                right: 20,
                 top: 0,
                 bottom: 0
             }
@@ -371,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
         scales: {
             x: {
                 title: {
-                    display: false // Hide X axis title
+                    display: false
                 },
                 ticks: {
                     color: '#082E6A',
@@ -379,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             y: {
                 title: {
-                    display: false // Hide Y axis title
+                    display: false
                 },
                 ticks: {
                     callback: function(value) {
@@ -391,31 +334,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Create Chart
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
-        type: 'line', // Keep type as 'line' to manage labels and points properly
+        type: 'line',
         data: data,
         options: options
     });
 
-    // Function to add data to the chart
     function addDataToChart(day, percentage) {
-        // Add the new data point to the chart's data
-        myChart.data.labels.push(day);
-        myChart.data.datasets[0].data.push(percentage);
+        const key = getMonthlyDataKey();
+        if (!monthlyData[key]) {
+            monthlyData[key] = { labels: [], data: [] };
+        }
+        monthlyData[key].labels.push(day);
+        monthlyData[key].data.push(percentage);
 
-        // Update the colors for the new data point
-        const numberOfPoints = myChart.data.labels.length;
-        myChart.data.datasets[0].backgroundColor = Array(numberOfPoints).fill('#34B4E3');
-        myChart.data.datasets[0].borderColor = Array(numberOfPoints).fill('#34B4E3');
-
-        // Update the chart
-        myChart.update();
-
-        // Update the selected month display in the bottom left corner
-        const selectedMonthLabel = document.getElementById('selectedMonthLabel');
-        selectedMonthLabel.textContent = `${months[currentMonth].slice(0, 3)}`; // Display first 3 letters of the month
+        loadChartData();
     }
 
+    loadChartData();
 });
