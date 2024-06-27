@@ -271,12 +271,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const data = {
-        labels: [],
+        labels: ['1', '5', '9', '13', '17', '21', '24', '27', '30'],
         datasets: [{
-            label: 'Percentage',
             data: [],
-            borderColor: '#34B4E3',
-            backgroundColor: '#34B4E3',
             borderWidth: 2,
             pointRadius: 5,
             pointBackgroundColor: '#34B4E3',
@@ -285,52 +282,48 @@ document.addEventListener('DOMContentLoaded', function() {
             pointHoverBackgroundColor: '#34B4E3',
             pointHoverBorderColor: '#34B4E3',
             pointHitRadius: 10,
-            pointBorderWidth: 2
+            pointStyle: 'circle'
         }]
     };
 
     const options = {
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(tooltipItem) {
-                        const day = tooltipItem.label;
-                        return `Day: ${day}, Month: ${months[currentMonth]}, Year: ${currentYear}`;
-                    }
-                }
-            },
-            legend: {
-                display: false
-            }
-        },
-        layout: {
-            padding: {
-                left: 20,
-                right: 20,
-                top: 0,
-                bottom: 0
-            }
-        },
         scales: {
-            x: {
-                title: {
-                    display: false
-                },
-                ticks: {
-                    color: '#082E6A',
-                }
-            },
             y: {
-                title: {
-                    display: false
-                },
+                beginAtZero: true,
+                max: 100,
                 ticks: {
                     callback: function(value) {
                         return value + '%';
                     },
-                    color: '#082E6A',
+                    stepSize: 20, // Adjust the step size to 20% increments
+                    maxTicksLimit: 6 // Limit to 6 ticks (0%, 20%, 40%, 60%, 80%, 100%)
+                }
+            },
+            x: {
+                ticks: {
+                    stepSize: 4 // Adjust the step size for x-axis ticks
                 }
             }
+        },
+        plugins: {
+            legend: {
+                display: false // Hide the legend
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + context.raw.toFixed(2) + '%';
+                    }
+                }
+            }
+        },
+        onResize: function(chart) {
+            const ctx = chart.ctx;
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(months[currentMonth], 10, chart.height - 10);
         }
     };
 
@@ -346,11 +339,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!monthlyData[key]) {
             monthlyData[key] = { labels: [], data: [] };
         }
-        monthlyData[key].labels.push(day);
-        monthlyData[key].data.push(percentage);
+        if (!monthlyData[key].labels.includes(day)) {
+            monthlyData[key].labels.push(day);
+            monthlyData[key].data.push(percentage);
+        } else {
+            const index = monthlyData[key].labels.indexOf(day);
+            monthlyData[key].data[index] = percentage;
+        }
 
         loadChartData();
+        updateDayStyle(day); // Update the day style after saving data
     }
 
-    loadChartData();
+    function updateDayStyle(day) {
+        const dayElements = daysContainer.querySelectorAll('div');
+        dayElements.forEach((dayElement) => {
+            if (parseInt(dayElement.textContent) === day) {
+                dayElement.classList.add('saved-day');
+            }
+        });
+    }
 });
