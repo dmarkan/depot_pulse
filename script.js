@@ -261,8 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadChartData() {
         const key = getMonthlyDataKey();
         const monthData = monthlyData[key] || { labels: [], data: [] };
-        
-        myChart.data.labels = monthData.labels;
+
         myChart.data.datasets[0].data = monthData.data;
         myChart.update();
 
@@ -271,7 +270,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const data = {
-        labels: ['1', '5', '9', '13', '17', '21', '24', '27', '30'],
         datasets: [{
             data: [],
             borderWidth: 2,
@@ -300,8 +298,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             x: {
+                type: 'linear', // Use linear scale for the x-axis
+                beginAtZero: true,
+                min: 1,
+                max: 31,
                 ticks: {
-                    stepSize: 4 // Adjust the step size for x-axis ticks
+                    stepSize: 4, // Adjust the step size for x-axis ticks
+                    callback: function(value) {
+                        return value % 1 === 0 ? value : '';
+                    }
                 }
             }
         },
@@ -312,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        return context.dataset.label + ': ' + context.raw.toFixed(2) + '%';
+                        return context.dataset.label + ': ' + context.raw.y.toFixed(2) + '%';
                     }
                 }
             }
@@ -337,14 +342,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function addDataToChart(day, percentage) {
         const key = getMonthlyDataKey();
         if (!monthlyData[key]) {
-            monthlyData[key] = { labels: [], data: [] };
+            monthlyData[key] = { data: [] };
         }
-        if (!monthlyData[key].labels.includes(day)) {
-            monthlyData[key].labels.push(day);
-            monthlyData[key].data.push(percentage);
+
+        const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
+        if (existingIndex === -1) {
+            monthlyData[key].data.push({ x: day, y: percentage });
         } else {
-            const index = monthlyData[key].labels.indexOf(day);
-            monthlyData[key].data[index] = percentage;
+            monthlyData[key].data[existingIndex] = { x: day, y: percentage };
         }
 
         loadChartData();
