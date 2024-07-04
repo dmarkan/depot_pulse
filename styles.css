@@ -5,6 +5,7 @@ body, html {
   font-family: Arial, sans-serif;
   position: relative;
   color: #082E6A;
+  overflow: hidden;
 }
 
 .logo {
