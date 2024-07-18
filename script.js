@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             selectedCountry = countryName;
             loadChartData();
+            updateDaysCarousel(); // Update days carousel based on selected month
         });
     });
 
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayMonth();
         saveMonth();
         loadChartData();
+        updateDaysCarousel(); // Update days carousel based on selected month
     });
 
     nextMonthBtn.addEventListener('click', () => {
@@ -148,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayMonth();
         saveMonth();
         loadChartData();
+        updateDaysCarousel(); // Update days carousel based on selected month
     });
 
     // Day navigation and display
@@ -211,6 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Backend integration placeholder
+    }
+
+    function updateDaysCarousel() {
+        daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        generateDays();
     }
 
     generateDays();
