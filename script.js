@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             selectedCountry = countryName;
             loadChartData();
-            updateDaysCarousel(); // Update days carousel based on selected month
         });
     });
 
@@ -109,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    const today = new Date();
 
     const monthDisplay = document.getElementById('monthDisplay');
     const prevMonthBtn = document.getElementById('prevMonthBtn');
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayMonth() {
         monthDisplay.textContent = months[currentMonth] + ' ' + currentYear;
+        updateMonthButtons();
     }
 
     function saveMonth() {
@@ -125,6 +126,14 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Backend integration placeholder
+    }
+
+    function updateMonthButtons() {
+        if (currentYear === today.getFullYear() && currentMonth === today.getMonth()) {
+            nextMonthBtn.disabled = true;
+        } else {
+            nextMonthBtn.disabled = false;
+        }
     }
 
     displayMonth();
@@ -138,19 +147,19 @@ document.addEventListener('DOMContentLoaded', function() {
         displayMonth();
         saveMonth();
         loadChartData();
-        updateDaysCarousel(); // Update days carousel based on selected month
     });
 
     nextMonthBtn.addEventListener('click', () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
+        if (!(currentYear === today.getFullYear() && currentMonth === today.getMonth())) {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            displayMonth();
+            saveMonth();
+            loadChartData();
         }
-        displayMonth();
-        saveMonth();
-        loadChartData();
-        updateDaysCarousel(); // Update days carousel based on selected month
     });
 
     // Day navigation and display
@@ -182,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateDay(i);
             });
         }
+        updateDayButtons();
     }
 
     function updateDay(newDay) {
@@ -206,6 +216,14 @@ document.addEventListener('DOMContentLoaded', function() {
         saveDay();
     }
 
+    function updateDayButtons() {
+        if (currentYear === today.getFullYear() && currentMonth === today.getMonth() && currentDay === today.getDate()) {
+            nextDayBtn.disabled = true;
+        } else {
+            nextDayBtn.disabled = false;
+        }
+    }
+
     function saveDay() {
         const selectedDay = {
             day: currentDay,
@@ -214,11 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Backend integration placeholder
-    }
-
-    function updateDaysCarousel() {
-        daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-        generateDays();
     }
 
     generateDays();
@@ -301,17 +314,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     callback: function(value) {
                         return value + '%';
                     },
-                    stepSize: 20, // Adjust the step size to 20% increments
-                    maxTicksLimit: 6 // Limit to 6 ticks (0%, 20%, 40%, 60%, 80%, 100%)
+                    stepSize: 20,
+                    maxTicksLimit: 6
                 }
             },
             x: {
-                type: 'linear', // Use linear scale for the x-axis
+                type: 'linear',
                 beginAtZero: true,
                 min: 1,
                 max: 31,
                 ticks: {
-                    stepSize: 4, // Adjust the step size for x-axis ticks
+                    stepSize: 4,
                     callback: function(value) {
                         return value % 1 === 0 ? value : '';
                     }
@@ -320,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         plugins: {
             legend: {
-                display: false // Hide the legend
+                display: false
             },
             tooltip: {
                 callbacks: {
@@ -361,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         loadChartData();
-        updateDayStyle(day); // Update the day style after saving data
+        updateDayStyle(day);
     }
 
     function updateDayStyle(day) {
@@ -373,3 +386,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
