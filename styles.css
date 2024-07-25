@@ -6,6 +6,7 @@ body, html {
   position: relative;
   color: #082E6A;
   overflow: hidden;
+  user-select: none;
 }
 
 .logo {
@@ -322,10 +323,3 @@ button.profile-button .profile-icon {
 .saved-day {
   background-color: #DFF7E3;
 }
-
-
-
-
-
-
-

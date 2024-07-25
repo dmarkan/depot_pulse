@@ -337,19 +337,17 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             tooltip: {
                 callbacks: {
+                    title: function(context) {
+                        // Format the tooltip title to display the full date
+                        const date = new Date(currentYear, currentMonth, context[0].raw.x);
+                        return `${date.toDateString()}`;
+                    },
                     label: function(context) {
-                        return context.dataset.label + ': ' + context.raw.y.toFixed(2) + '%';
+                        // Format the tooltip label to display the percentage
+                        return `Percentage: ${context.raw.y}%`;
                     }
                 }
             }
-        },
-        onResize: function(chart) {
-            const ctx = chart.ctx;
-            ctx.font = '14px Arial';
-            ctx.fillStyle = '#333';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(months[currentMonth], 10, chart.height - 10);
         }
     };
 
