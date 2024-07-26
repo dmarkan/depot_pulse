@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const countryPopup = document.getElementById('country-popup');
     const profilePopup = document.getElementById('profile-popup');
     const closeButton = document.querySelectorAll('.close-icon');
-    const logo = document.querySelector('.logo');
     const logoutButton = document.getElementById('logout-button');
     const profileEmail = document.getElementById('profile-email');
     const countryList = document.querySelectorAll('.country-list li');
@@ -23,47 +22,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let selectedCountry = 'Georgia';
 
-    // Check for stored credentials
     if (storedEmail === validEmail && storedPassword === validPassword) {
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
-        logo.style.display = 'none';
     } else {
         loginScreen.style.display = 'flex';
         mainScreen.style.display = 'none';
     }
 
-    // Handle login form submission
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
-
         const email = emailInput.value;
         const password = passwordInput.value;
-
         if (email === validEmail && password === validPassword) {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
-
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
-            logo.style.display = 'none';
         } else {
             errorMessage.textContent = 'Incorrect email or password';
         }
     });
 
-    // Show country selection popup
     dropdownButton.addEventListener('click', function() {
         countryPopup.style.display = 'flex';
     });
 
-    // Show profile popup
     profileButton.addEventListener('click', function() {
         profileEmail.textContent = `${storedEmail}`;
         profilePopup.style.display = 'flex';
     });
 
-    // Close popups
     closeButton[0].addEventListener('click', function() {
         countryPopup.style.display = 'none';
     });
@@ -72,35 +61,24 @@ document.addEventListener('DOMContentLoaded', function() {
         profilePopup.style.display = 'none';
     });
 
-    // Logout
     logoutButton.addEventListener('click', function() {
         localStorage.removeItem('email');
         localStorage.removeItem('password');
         window.location.reload();
     });
 
-    // Handle country selection
     countryList.forEach(function(countryItem) {
         countryItem.addEventListener('click', function() {
             const countryName = countryItem.textContent.trim();
-            const countryFlag = countryItem.querySelector('img').cloneNode(true);
-
-            countryFlag.style.width = '20px';
-            countryFlag.style.height = 'auto';
-
-            dropdownButton.innerHTML = '';
-            dropdownButton.appendChild(countryFlag);
-            dropdownButton.insertAdjacentText('beforeend', countryName);
+            dropdownButton.textContent = countryName;
             dropdownButton.insertAdjacentHTML('beforeend', '<span class="dropdown-icon">&#9660;</span>');
-
             countryPopup.style.display = 'none';
-
             selectedCountry = countryName;
             loadChartData();
+            generateDays();
         });
     });
 
-    // Month navigation and display
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -124,8 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
-
-        // Backend integration placeholder
     }
 
     function updateMonthButtons() {
@@ -147,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayMonth();
         saveMonth();
         loadChartData();
+        generateDays();
     });
 
     nextMonthBtn.addEventListener('click', () => {
@@ -159,16 +136,18 @@ document.addEventListener('DOMContentLoaded', function() {
             displayMonth();
             saveMonth();
             loadChartData();
+            generateDays();
         }
     });
 
-    // Day navigation and display
     const daysContainer = document.getElementById('daysContainer');
     const prevDayBtn = document.getElementById('prevDayBtn');
     const nextDayBtn = document.getElementById('nextDayBtn');
 
     let currentDay = new Date().getDate();
     let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const savedDays = JSON.parse(localStorage.getItem('savedDays')) || {};
 
     function generateDays() {
         daysContainer.innerHTML = '';
@@ -185,6 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
             dayElement.textContent = i;
             if (i === currentDay) {
                 dayElement.classList.add('center-slide');
+            }
+            if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
+                dayElement.classList.add('saved-day');
             }
             daysContainer.appendChild(dayElement);
             dayElement.addEventListener('click', () => {
@@ -230,8 +212,6 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
-
-        // Backend integration placeholder
     }
 
     generateDays();
@@ -244,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDay(currentDay + 1);
     });
 
-    // Range slider functionality
     const rangeSlider = document.getElementById('rangeSlider');
     const sliderPercentage = document.getElementById('sliderPercentage');
 
@@ -254,7 +233,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function savePercentage(percentage) {
-        // Backend integration placeholder
     }
 
     const applyButton = document.getElementById('applyButton');
@@ -262,17 +240,14 @@ document.addEventListener('DOMContentLoaded', function() {
     applyButton.addEventListener('click', function() {
         const selectedPercentage = rangeSlider.value;
         savePercentage(selectedPercentage);
-
         const selectedMonth = currentMonth + 1;
         const selectedYear = currentYear;
         const selectedDay = currentDay;
-
-        // Backend integration placeholder
-
         addDataToChart(selectedDay, selectedPercentage);
+        markDayAsSaved(selectedCountry, currentYear, currentMonth, currentDay);
+        generateDays();
     });
 
-    // Chart data management
     const monthlyData = {};
 
     function getMonthlyDataKey() {
@@ -282,10 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadChartData() {
         const key = getMonthlyDataKey();
         const monthData = monthlyData[key] || { labels: [], data: [] };
-
         myChart.data.datasets[0].data = monthData.data;
         myChart.update();
-
         const selectedMonthLabel = document.getElementById('selectedMonthLabel');
         selectedMonthLabel.textContent = `${months[currentMonth].slice(0, 3)}`;
     }
@@ -338,12 +311,10 @@ document.addEventListener('DOMContentLoaded', function() {
             tooltip: {
                 callbacks: {
                     title: function(context) {
-                        // Format the tooltip title to display the full date
                         const date = new Date(currentYear, currentMonth, context[0].raw.x);
                         return `${date.toDateString()}`;
                     },
                     label: function(context) {
-                        // Format the tooltip label to display the percentage
                         return `Percentage: ${context.raw.y}%`;
                     }
                 }
@@ -363,14 +334,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!monthlyData[key]) {
             monthlyData[key] = { data: [] };
         }
-
         const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
         if (existingIndex === -1) {
             monthlyData[key].data.push({ x: day, y: percentage });
         } else {
             monthlyData[key].data[existingIndex] = { x: day, y: percentage };
         }
-
         loadChartData();
         updateDayStyle(day);
     }
@@ -383,5 +352,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
 
+    function markDayAsSaved(country, year, month, day) {
+        const key = `${country}-${year}-${month}-${day}`;
+        savedDays[key] = true;
+        localStorage.setItem('savedDays', JSON.stringify(savedDays));
+    }
+
+    function isDaySaved(country, year, month, day) {
+        const key = `${country}-${year}-${month}-${day}`;
+        return savedDays[key] || false;
+    }
+});

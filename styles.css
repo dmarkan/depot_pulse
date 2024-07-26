@@ -130,7 +130,16 @@ button.profile-button .profile-icon {
 
 .popup-header {
   font-size: 18px;
+  color: #082E6A; /* Text color */
   margin-bottom: 10px;
+}
+
+.header button.dropdown-button {
+  color: #082E6A; /* Text color */
+}
+
+.header button.profile-button {
+  color: #082E6A; /* Text color */
 }
 
 .country-list-container {
@@ -171,11 +180,7 @@ button.profile-button .profile-icon {
 .dropdown-button {
   display: flex;
   align-items: center;
-  padding: 10px;
-  background-color: transparent;
-  color: #082E6A;
-  border: none;
-  cursor: pointer;
+  padding: 10px 20px;
   border-radius: 20px;
   font-size: 16px;
   white-space: nowrap;
@@ -322,4 +327,12 @@ button.profile-button .profile-icon {
 
 .saved-day {
   background-color: #DFF7E3;
+}
+
+#main-screen .logo {
+  display: none;
+}
+
+#login-screen .logo {
+  display: block;
 }
