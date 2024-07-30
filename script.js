@@ -21,10 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const storedPassword = localStorage.getItem('password');
 
     let selectedCountry = 'Georgia';
+    let selectedFlag = 'images/georgia-flag.png'; // Default flag
 
     if (storedEmail === validEmail && storedPassword === validPassword) {
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
+        updateDropdownButton(selectedCountry, selectedFlag);
     } else {
         loginScreen.style.display = 'flex';
         mainScreen.style.display = 'none';
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('password', password);
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
+            updateDropdownButton(selectedCountry, selectedFlag);
         } else {
             errorMessage.textContent = 'Incorrect email or password';
         }
@@ -70,14 +73,21 @@ document.addEventListener('DOMContentLoaded', function() {
     countryList.forEach(function(countryItem) {
         countryItem.addEventListener('click', function() {
             const countryName = countryItem.textContent.trim();
-            dropdownButton.textContent = countryName;
-            dropdownButton.insertAdjacentHTML('beforeend', '<span class="dropdown-icon">&#9660;</span>');
+            selectedFlag = countryItem.getAttribute('data-flag');
+            updateDropdownButton(countryName, selectedFlag);
             countryPopup.style.display = 'none';
             selectedCountry = countryName;
             loadChartData();
             generateDays();
         });
     });
+
+    function updateDropdownButton(countryName, flagUrl) {
+        const selectedFlagImage = document.getElementById('selectedFlag');
+        const selectedCountryName = document.getElementById('selectedCountryName');
+        selectedFlagImage.src = flagUrl;
+        selectedCountryName.textContent = countryName;
+    }
 
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -102,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
+        // Implement save logic if needed
     }
 
     function updateMonthButtons() {
@@ -212,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
+        // Implement save logic if needed
     }
 
     generateDays();
@@ -233,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function savePercentage(percentage) {
+        // Implement save logic if needed
     }
 
     const applyButton = document.getElementById('applyButton');
