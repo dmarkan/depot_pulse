@@ -336,3 +336,7 @@ button.profile-button .profile-icon {
 #login-screen .logo {
   display: block;
 }
+
+.no-arrow {
+  display: none;
+}

@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const validEmail = 'admin@oximio.com';
-    const validPassword = 'admin123';
+    const adminEmail = 'admin@oximio.com';
+    const adminPassword = 'admin123';
+
+    const countryCredentials = {
+        'georgia@oximio.com': 'georgia123',
+        'hungary@oximio.com': 'hungary123',
+        'israel@oximio.com': 'israel123',
+        'serbia@oximio.com': 'serbia123',
+        'south_africa@oximio.com': 'south_africa123',
+        'turkiye@oximio.com': 'turkiye123',
+        'ukraine_b@oximio.com': 'ukraine_b123',
+        'ukraine_k@oximio.com': 'ukraine_k123',
+        // Add additional country emails and passwords here
+    };
 
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
@@ -22,11 +34,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let selectedCountry = 'Georgia';
     let selectedFlag = 'images/georgia-flag.png'; // Default flag
+    let isAdmin = false;
 
-    if (storedEmail === validEmail && storedPassword === validPassword) {
+    if (storedEmail === adminEmail && storedPassword === adminPassword) {
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
+        isAdmin = true;
         updateDropdownButton(selectedCountry, selectedFlag);
+    } else if (countryCredentials[storedEmail] === storedPassword) {
+        loginScreen.style.display = 'none';
+        mainScreen.style.display = 'flex';
+        selectedCountry = storedEmail.split('@')[0];
+        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
+        updateDropdownButton(selectedCountry, selectedFlag);
+        disableCountrySelection();
     } else {
         loginScreen.style.display = 'flex';
         mainScreen.style.display = 'none';
@@ -36,19 +57,31 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const email = emailInput.value;
         const password = passwordInput.value;
-        if (email === validEmail && password === validPassword) {
+        if (email === adminEmail && password === adminPassword) {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
+            isAdmin = true;
             updateDropdownButton(selectedCountry, selectedFlag);
+        } else if (countryCredentials[email] === password) {
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            loginScreen.style.display = 'none';
+            mainScreen.style.display = 'flex';
+            selectedCountry = email.split('@')[0];
+            selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
+            updateDropdownButton(selectedCountry, selectedFlag);
+            disableCountrySelection();
         } else {
             errorMessage.textContent = 'Incorrect email or password';
         }
     });
 
     dropdownButton.addEventListener('click', function() {
-        countryPopup.style.display = 'flex';
+        if (isAdmin) {
+            countryPopup.style.display = 'flex';
+        }
     });
 
     profileButton.addEventListener('click', function() {
@@ -85,8 +118,34 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateDropdownButton(countryName, flagUrl) {
         const selectedFlagImage = document.getElementById('selectedFlag');
         const selectedCountryName = document.getElementById('selectedCountryName');
+        const dropdownButton = document.querySelector('.dropdown-icon');
+        
         selectedFlagImage.src = flagUrl;
-        selectedCountryName.textContent = countryName;
+        selectedCountryName.textContent = countryName.charAt(0).toUpperCase() + countryName.slice(1);
+        
+        // Apply or remove the class to hide the arrow
+        if (isAdmin) {
+            dropdownButton.classList.remove('no-arrow');
+        } else {
+            dropdownButton.classList.add('no-arrow');
+        }
+    }
+     
+
+    function disableCountrySelection() {
+        countryList.forEach((item) => {
+            if (item.textContent.trim() !== selectedCountry) {
+                item.style.pointerEvents = 'none';
+                item.style.color = 'gray';
+            }
+        });
+    }
+
+    function enableCountrySelection() {
+        countryList.forEach((item) => {
+            item.style.pointerEvents = 'auto';
+            item.style.color = 'black';
+        });
     }
 
     const months = [
@@ -207,7 +266,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         generateDays();
         saveDay();
+    
+        // Set the percentage slider value based on the saved data for the selected day
+        setSliderValueForDay(currentDay);
     }
+    
+    function setSliderValueForDay(day) {
+        const key = getMonthlyDataKey();
+        const dayData = monthlyData[key]?.data.find(point => point.x === day);
+        const percentage = dayData ? dayData.y : 0;
+        rangeSlider.value = percentage;
+        sliderPercentage.textContent = percentage + '%';
+    }
+    
+    function addDataToChart(day, percentage) {
+        const key = getMonthlyDataKey();
+        if (!monthlyData[key]) {
+            monthlyData[key] = { data: [] };
+        }
+        const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
+        if (existingIndex === -1) {
+            monthlyData[key].data.push({ x: day, y: percentage });
+        } else {
+            monthlyData[key].data[existingIndex] = { x: day, y: percentage };
+        }
+        loadChartData();
+        updateDayStyle(day);
+        setSliderValueForDay(day); // Ensure slider is updated when data is added
+    }    
 
     function updateDayButtons() {
         if (currentYear === today.getFullYear() && currentMonth === today.getMonth() && currentDay === today.getDate()) {
@@ -377,3 +463,4 @@ document.addEventListener('DOMContentLoaded', function() {
         return savedDays[key] || false;
     }
 });
+
