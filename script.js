@@ -229,8 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function generateDays() {
         daysContainer.innerHTML = '';
-        updateDaysInMonth(); // Update days in month before generating days
-    
         let startDay = currentDay - 2;
         if (startDay < 1) startDay = 1;
         let endDay = startDay + 4;
@@ -249,14 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 dayElement.classList.add('saved-day');
             }
             daysContainer.appendChild(dayElement);
-            dayElement.addEventListener('click', () => {
-                updateDay(i);
-            });
         }
         updateDayButtons();
     }
     
-
     function updateDay(newDay) {
         currentDay = newDay;
         if (currentDay < 1) {
@@ -328,10 +322,11 @@ document.addEventListener('DOMContentLoaded', function() {
     prevDayBtn.addEventListener('click', () => {
         updateDay(currentDay - 1);
     });
-
+    
     nextDayBtn.addEventListener('click', () => {
         updateDay(currentDay + 1);
     });
+    
 
     const rangeSlider = document.getElementById('rangeSlider');
     const sliderPercentage = document.getElementById('sliderPercentage');
@@ -474,4 +469,3 @@ document.addEventListener('DOMContentLoaded', function() {
         return savedDays[key] || false;
     }
 });
-// -----------------------
