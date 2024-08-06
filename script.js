@@ -190,12 +190,13 @@ document.addEventListener('DOMContentLoaded', function() {
             currentMonth = 11;
             currentYear--;
         }
+        updateDaysInMonth(); // Update days in month when month/year changes
         displayMonth();
         saveMonth();
         loadChartData();
         generateDays();
     });
-
+    
     nextMonthBtn.addEventListener('click', () => {
         if (!(currentYear === today.getFullYear() && currentMonth === today.getMonth())) {
             currentMonth++;
@@ -203,12 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentMonth = 0;
                 currentYear++;
             }
+            updateDaysInMonth(); // Update days in month when month/year changes
             displayMonth();
             saveMonth();
             loadChartData();
             generateDays();
         }
     });
+    
 
     const daysContainer = document.getElementById('daysContainer');
     const prevDayBtn = document.getElementById('prevDayBtn');
@@ -219,8 +222,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const savedDays = JSON.parse(localStorage.getItem('savedDays')) || {};
 
+    function updateDaysInMonth() {
+        daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    }
+    
+
     function generateDays() {
         daysContainer.innerHTML = '';
+        updateDaysInMonth(); // Update days in month before generating days
+    
         let startDay = currentDay - 2;
         if (startDay < 1) startDay = 1;
         let endDay = startDay + 4;
@@ -245,6 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         updateDayButtons();
     }
+    
 
     function updateDay(newDay) {
         currentDay = newDay;
@@ -254,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentMonth = 11;
                 currentYear--;
             }
-            daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            updateDaysInMonth(); // Update days in month when month/year changes
             currentDay = daysInMonth;
         } else if (currentDay > daysInMonth) {
             currentMonth++;
@@ -263,13 +274,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentYear++;
             }
             currentDay = 1;
+            updateDaysInMonth(); // Update days in month when month/year changes
         }
         generateDays();
         saveDay();
-    
-        // Set the percentage slider value based on the saved data for the selected day
         setSliderValueForDay(currentDay);
     }
+    
     
     function setSliderValueForDay(day) {
         const key = getMonthlyDataKey();
@@ -463,4 +474,4 @@ document.addEventListener('DOMContentLoaded', function() {
         return savedDays[key] || false;
     }
 });
-
+// -----------------------
