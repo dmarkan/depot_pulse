@@ -227,62 +227,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-    function generateDays() {
-        daysContainer.innerHTML = '';
-        let startDay = currentDay - 2;
+  function generateDays() {
+    daysContainer.innerHTML = '';
+    let startDay = currentDay - 2;
+    if (startDay < 1) startDay = 1;
+    let endDay = startDay + 4;
+    if (endDay > daysInMonth) {
+        endDay = daysInMonth;
+        startDay = endDay - 4;
         if (startDay < 1) startDay = 1;
-        let endDay = startDay + 4;
-        if (endDay > daysInMonth) {
-            endDay = daysInMonth;
-            startDay = endDay - 4;
-            if (startDay < 1) startDay = 1;
-        }
-        for (let i = startDay; i <= endDay; i++) {
-            const dayElement = document.createElement('div');
-            dayElement.textContent = i;
-    
-            // Check if the day is in the future and apply the background color
-            const isFutureDay = new Date(currentYear, currentMonth, i) > today;
-            if (isFutureDay) {
-                dayElement.style.backgroundColor = '#808080';
-            } else {
-                if (i === currentDay) {
-                    dayElement.classList.add('center-slide');
-                }
-                if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
-                    dayElement.classList.add('saved-day');
-                }
-            }
-    
-            daysContainer.appendChild(dayElement);
-        }
-        updateDayButtons();
     }
+    for (let i = startDay; i <= endDay; i++) {
+        const dayElement = document.createElement('div');
+        dayElement.textContent = i;
+
+        // Check if the day is in the future and apply the background color
+        const isFutureDay = new Date(currentYear, currentMonth, i) > today;
+        if (isFutureDay) {
+            dayElement.style.backgroundColor = '#808080';
+        } else {
+            if (i === currentDay) {
+                dayElement.classList.add('center-slide');
+            }
+            if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
+                dayElement.classList.add('saved-day');
+            }
+        }
+
+        daysContainer.appendChild(dayElement);
+    }
+    updateDayButtons();
+}
+
     
-    
-    function updateDay(newDay) {
+function updateDay(newDay) {
+    if (newDay < 1) {
+        // If trying to go before the first day, set to the first day
+        currentDay = 1;
+    } else if (newDay > daysInMonth) {
+        // If trying to go after the last day, set to the last day
+        currentDay = daysInMonth;
+    } else {
+        // Set to the newDay value
         currentDay = newDay;
-        if (currentDay < 1) {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            updateDaysInMonth(); // Update days in month when month/year changes
-            currentDay = daysInMonth;
-        } else if (currentDay > daysInMonth) {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            currentDay = 1;
-            updateDaysInMonth(); // Update days in month when month/year changes
-        }
-        generateDays();
-        saveDay();
-        setSliderValueForDay(currentDay);
     }
+
+    // Check if the day needs to adjust the month or year
+    if (currentDay < 1) {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        updateDaysInMonth();
+        currentDay = daysInMonth;
+    } else if (currentDay > daysInMonth) {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        currentDay = 1;
+        updateDaysInMonth();
+    }
+
+    generateDays();
+    saveDay();
+    setSliderValueForDay(currentDay);
+}
     
     
     function setSliderValueForDay(day) {
@@ -310,12 +322,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }    
 
     function updateDayButtons() {
-        if (currentYear === today.getFullYear() && currentMonth === today.getMonth() && currentDay === today.getDate()) {
+        // Disable nextDayBtn if on the last day of the current month or current day
+        if ((currentDay === daysInMonth && !(currentYear === today.getFullYear() && currentMonth === today.getMonth())) ||
+            (currentDay === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear())) {
             nextDayBtn.disabled = true;
         } else {
             nextDayBtn.disabled = false;
         }
+
+        // Disable prevDayBtn if on the first day of the current month
+        if (currentDay === 1) {
+            prevDayBtn.disabled = true;
+        } else {
+            prevDayBtn.disabled = false;
+        }
     }
+
 
     function saveDay() {
         const selectedDay = {
@@ -331,12 +353,22 @@ document.addEventListener('DOMContentLoaded', function() {
     prevDayBtn.addEventListener('click', () => {
         updateDay(currentDay - 1);
     });
-    
+
     nextDayBtn.addEventListener('click', () => {
+        // Prevent moving past the current day in the current month
+        if (currentYear === today.getFullYear() && currentMonth === today.getMonth() && currentDay >= today.getDate()) {
+            return;
+        }
         updateDay(currentDay + 1);
     });
     
-
+    function isSelectedDayFuture() {
+        const selectedDayElement = Array.from(daysContainer.children).find(dayElement => {
+            return parseInt(dayElement.textContent) === currentDay;
+        });
+        return selectedDayElement && selectedDayElement.style.backgroundColor === 'rgb(128, 128, 128)'; // rgb value for #808080
+    }
+    
     const rangeSlider = document.getElementById('rangeSlider');
     const sliderPercentage = document.getElementById('sliderPercentage');
 
@@ -351,16 +383,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const applyButton = document.getElementById('applyButton');
 
-    applyButton.addEventListener('click', function() {
-        const selectedPercentage = rangeSlider.value;
-        savePercentage(selectedPercentage);
-        const selectedMonth = currentMonth + 1;
-        const selectedYear = currentYear;
-        const selectedDay = currentDay;
-        addDataToChart(selectedDay, selectedPercentage);
-        markDayAsSaved(selectedCountry, currentYear, currentMonth, currentDay);
-        generateDays();
-    });
+applyButton.addEventListener('click', function() {
+    if (isSelectedDayFuture()) {
+        return; // Do nothing if the selected day is in the future
+    }
+
+    const selectedPercentage = rangeSlider.value;
+    savePercentage(selectedPercentage);
+    const selectedMonth = currentMonth + 1;
+    const selectedYear = currentYear;
+    const selectedDay = currentDay;
+    addDataToChart(selectedDay, selectedPercentage);
+    markDayAsSaved(selectedCountry, currentYear, currentMonth, currentDay);
+    generateDays();
+});
+
+function updateApplyButtonState() {
+    applyButton.disabled = isSelectedDayFuture();
+}
+
+generateDays(); // Call this function to set the initial state of Apply button
+updateApplyButtonState(); // Ensure Apply button reflects the state of the current selection
+
 
     const monthlyData = {};
 
