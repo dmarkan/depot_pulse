@@ -240,16 +240,25 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = startDay; i <= endDay; i++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = i;
-            if (i === currentDay) {
-                dayElement.classList.add('center-slide');
+    
+            // Check if the day is in the future and apply the background color
+            const isFutureDay = new Date(currentYear, currentMonth, i) > today;
+            if (isFutureDay) {
+                dayElement.style.backgroundColor = '#808080';
+            } else {
+                if (i === currentDay) {
+                    dayElement.classList.add('center-slide');
+                }
+                if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
+                    dayElement.classList.add('saved-day');
+                }
             }
-            if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
-                dayElement.classList.add('saved-day');
-            }
+    
             daysContainer.appendChild(dayElement);
         }
         updateDayButtons();
     }
+    
     
     function updateDay(newDay) {
         currentDay = newDay;
