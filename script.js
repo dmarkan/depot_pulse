@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check if the day is in the future and apply the background color
             const isFutureDay = new Date(currentYear, currentMonth, i) > today;
             if (isFutureDay) {
-                dayElement.style.backgroundColor = '#808080';
+                dayElement.style.color = '#BDBDBD';
             } else {
                 if (i === currentDay) {
                     dayElement.classList.add('center-slide');
@@ -530,4 +530,3 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
         return savedDays[key] || false;
     }
 });
-// ===========
