@@ -110,10 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
             updateDropdownButton(countryName, selectedFlag);
             countryPopup.style.display = 'none';
             selectedCountry = countryName;
-            loadChartData();
+    
+            // Set the current month and day
+            currentMonth = today.getMonth(); // Current month
+            currentYear = today.getFullYear(); // Current year
+            currentDay = today.getDate(); // Current day
+    
+            // Update UI
+            displayMonth();
             generateDays();
+            loadChartData();
         });
     });
+    
 
     function updateDropdownButton(countryName, flagUrl) {
         const selectedFlagImage = document.getElementById('selectedFlag');
@@ -165,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         monthDisplay.textContent = months[currentMonth] + ' ' + currentYear;
         updateMonthButtons();
     }
+    
 
     function saveMonth() {
         const selectedMonth = {
@@ -227,74 +237,72 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-  function generateDays() {
-    daysContainer.innerHTML = '';
-    let startDay = currentDay - 2;
-    if (startDay < 1) startDay = 1;
-    let endDay = startDay + 4;
-    if (endDay > daysInMonth) {
-        endDay = daysInMonth;
-        startDay = endDay - 4;
+    function generateDays() {
+        daysContainer.innerHTML = '';
+        let startDay = currentDay - 2;
         if (startDay < 1) startDay = 1;
-    }
-    for (let i = startDay; i <= endDay; i++) {
-        const dayElement = document.createElement('div');
-        dayElement.textContent = i;
-
-        // Check if the day is in the future and apply the background color
-        const isFutureDay = new Date(currentYear, currentMonth, i) > today;
-        if (isFutureDay) {
-            dayElement.style.backgroundColor = '#808080';
-        } else {
-            if (i === currentDay) {
-                dayElement.classList.add('center-slide');
-            }
-            if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
-                dayElement.classList.add('saved-day');
-            }
+        let endDay = startDay + 4;
+        if (endDay > daysInMonth) {
+            endDay = daysInMonth;
+            startDay = endDay - 4;
+            if (startDay < 1) startDay = 1;
         }
-
-        daysContainer.appendChild(dayElement);
+        for (let i = startDay; i <= endDay; i++) {
+            const dayElement = document.createElement('div');
+            dayElement.textContent = i;
+    
+            // Check if the day is in the future and apply the background color
+            const isFutureDay = new Date(currentYear, currentMonth, i) > today;
+            if (isFutureDay) {
+                dayElement.style.backgroundColor = '#808080';
+            } else {
+                if (i === currentDay) {
+                    dayElement.classList.add('center-slide');
+                }
+                if (isDaySaved(selectedCountry, currentYear, currentMonth, i)) {
+                    dayElement.classList.add('saved-day');
+                }
+            }
+    
+            daysContainer.appendChild(dayElement);
+        }
+        updateDayButtons();
     }
-    updateDayButtons();
-}
+    
 
     
-function updateDay(newDay) {
-    if (newDay < 1) {
-        // If trying to go before the first day, set to the first day
-        currentDay = 1;
-    } else if (newDay > daysInMonth) {
-        // If trying to go after the last day, set to the last day
-        currentDay = daysInMonth;
-    } else {
-        // Set to the newDay value
-        currentDay = newDay;
-    }
-
-    // Check if the day needs to adjust the month or year
-    if (currentDay < 1) {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
+    function updateDay(newDay) {
+        if (newDay < 1) {
+            currentDay = 1;
+        } else if (newDay > daysInMonth) {
+            currentDay = daysInMonth;
+        } else {
+            currentDay = newDay;
         }
-        updateDaysInMonth();
-        currentDay = daysInMonth;
-    } else if (currentDay > daysInMonth) {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
+    
+        if (currentDay < 1) {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateDaysInMonth();
+            currentDay = daysInMonth;
+        } else if (currentDay > daysInMonth) {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            currentDay = 1;
+            updateDaysInMonth();
         }
-        currentDay = 1;
-        updateDaysInMonth();
+    
+        generateDays();
+        saveDay();
+        setSliderValueForDay(currentDay);
     }
-
-    generateDays();
-    saveDay();
-    setSliderValueForDay(currentDay);
-}
+    
     
     
     function setSliderValueForDay(day) {
@@ -522,3 +530,4 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
         return savedDays[key] || false;
     }
 });
+// ===========
