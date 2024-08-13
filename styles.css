@@ -5,7 +5,6 @@ body, html {
   font-family: Arial, sans-serif;
   position: relative;
   color: #082E6A;
-  overflow: hidden;
   user-select: none;
 }
 
@@ -341,3 +340,6 @@ button.profile-button .profile-icon {
   display: none;
 }
 
+.main-screen-display {
+  display: none;
+}

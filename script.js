@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const storedEmail = localStorage.getItem('email');
     const storedPassword = localStorage.getItem('password');
 
+    const mainScreenDisplay = document.getElementById('main-screen-display');
+
     let selectedCountry = 'Georgia';
     let selectedFlag = 'images/georgia-flag.png'; // Default flag
     let isAdmin = false;
@@ -41,9 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
         mainScreen.style.display = 'flex';
         isAdmin = true;
         updateDropdownButton(selectedCountry, selectedFlag);
+        mainScreenDisplay.style.display = 'block';
     } else if (countryCredentials[storedEmail] === storedPassword) {
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
+        mainScreenDisplay.style.display = 'block';
         selectedCountry = storedEmail.split('@')[0];
         selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
         updateDropdownButton(selectedCountry, selectedFlag);
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('password', password);
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
+            mainScreenDisplay.style.display = 'block';
             isAdmin = true;
             updateDropdownButton(selectedCountry, selectedFlag);
         } else if (countryCredentials[email] === password) {
@@ -69,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('password', password);
             loginScreen.style.display = 'none';
             mainScreen.style.display = 'flex';
+            mainScreenDisplay.style.display = 'block';
             selectedCountry = email.split('@')[0];
             selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
             updateDropdownButton(selectedCountry, selectedFlag);
