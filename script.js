@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileEmail = document.getElementById('profile-email');
     const countryList = document.querySelectorAll('.country-list li');
 
+    // BACKEND: Fetch stored email and password from the database instead of localStorage
     const storedEmail = localStorage.getItem('email');
     const storedPassword = localStorage.getItem('password');
 
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedFlag = 'images/georgia-flag.png'; // Default flag
     let isAdmin = false;
 
+    // BACKEND: Replace this section with a database query to check if the user is an admin
     if (storedEmail === adminEmail && storedPassword === adminPassword) {
         loginScreen.style.display = 'none';
         mainScreen.style.display = 'flex';
@@ -61,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const email = emailInput.value;
         const password = passwordInput.value;
+
+        // BACKEND: Validate login credentials against the database
         if (email === adminEmail && password === adminPassword) {
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
@@ -70,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isAdmin = true;
             updateDropdownButton(selectedCountry, selectedFlag);
         } else if (countryCredentials[email] === password) {
+            // BACKEND: Store user session in the database
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
             loginScreen.style.display = 'none';
@@ -125,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             displayMonth();
             generateDays();
-            loadChartData();
+            loadChartData(); // BACKEND: Load chart data from the database for the selected country
         });
     });
     
@@ -187,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
-        // Implement save logic if needed
+    // BACKEND: Save selected month to the database
     }
 
     function updateMonthButtons() {
@@ -208,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         updateDaysInMonth(); // Update days in month when month/year changes
         displayMonth();
-        saveMonth();
-        loadChartData();
+        saveMonth(); // BACKEND: Save month data to the database
+        loadChartData(); // BACKEND: Load chart data from the database for the updated month
         generateDays();
     });
     
@@ -222,8 +227,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             updateDaysInMonth(); // Update days in month when month/year changes
             displayMonth();
-            saveMonth();
-            loadChartData();
+            saveMonth(); // BACKEND: Save month data to the database
+            loadChartData(); // BACKEND: Load chart data from the database for the updated month
             generateDays();
         }
     });
@@ -305,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         generateDays();
-        saveDay();
+        saveDay(); // BACKEND: Save day data to the database
         setSliderValueForDay(currentDay);
     }
     
@@ -313,6 +318,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function setSliderValueForDay(day) {
         const key = getMonthlyDataKey();
+        // Example backend: Fetch percentage data for the day
+        // Replace with backend API call to get percentage data
         const dayData = monthlyData[key]?.data.find(point => point.x === day);
         const percentage = dayData ? dayData.y : 0;
         rangeSlider.value = percentage;
@@ -330,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             monthlyData[key].data[existingIndex] = { x: day, y: percentage };
         }
-        loadChartData();
+        loadChartData(); // Example backend: Load chart data
         updateDayStyle(day);
         setSliderValueForDay(day); // Ensure slider is updated when data is added
     }    
@@ -359,7 +366,8 @@ document.addEventListener('DOMContentLoaded', function() {
             month: currentMonth + 1,
             year: currentYear
         };
-        // Implement save logic if needed
+    // Example backend: Save selected day
+    // Implement save logic via backend API call
     }
 
     generateDays();
@@ -392,7 +400,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function savePercentage(percentage) {
-        // Implement save logic if needed
+    // Example backend: Save percentage
+    // Implement save logic via backend API call
     }
 
     const applyButton = document.getElementById('applyButton');
@@ -403,7 +412,7 @@ applyButton.addEventListener('click', function() {
     }
 
     const selectedPercentage = rangeSlider.value;
-    savePercentage(selectedPercentage);
+    savePercentage(selectedPercentage); // Example backend: Save percentage for the day
     const selectedMonth = currentMonth + 1;
     const selectedYear = currentYear;
     const selectedDay = currentDay;
@@ -428,6 +437,8 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
 
     function loadChartData() {
         const key = getMonthlyDataKey();
+        // Example backend: Load chart data for the selected month
+    // Fetch data from the backend
         const monthData = monthlyData[key] || { labels: [], data: [] };
         myChart.data.datasets[0].data = monthData.data;
         myChart.update();
@@ -512,7 +523,7 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
         } else {
             monthlyData[key].data[existingIndex] = { x: day, y: percentage };
         }
-        loadChartData();
+        loadChartData(); // Example backend: Load chart data
         updateDayStyle(day);
     }
 
@@ -528,6 +539,8 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
     function markDayAsSaved(country, year, month, day) {
         const key = `${country}-${year}-${month}-${day}`;
         savedDays[key] = true;
+        // Example backend: Save day as saved
+    // Replace with backend API call to update saved days
         localStorage.setItem('savedDays', JSON.stringify(savedDays));
     }
 
