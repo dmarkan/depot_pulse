@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    localStorage.clear();
     const adminEmail = 'admin@oximio.com';
     const adminPassword = 'admin123';
 
@@ -39,6 +38,30 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedCountry = 'Georgia';
     let selectedFlag = 'images/georgia-flag.png'; // Default flag
     let isAdmin = false;
+
+    function applyChartStyles() {
+        // Select the chart container
+        const chartContainer = document.getElementById('chart-container');
+        if (chartContainer) {
+            // Apply styles to the chart container
+            chartContainer.style.width = '80vh'; // 50% of the page width
+            chartContainer.style.height = '40vh'; // 40% of the viewport height
+            chartContainer.style.display = 'flex';
+            chartContainer.style.justifyContent = 'center';
+            chartContainer.style.alignItems = 'center';
+            chartContainer.style.margin = '0 auto'; // Center the container horizontally
+        }
+    
+        // Select the chart canvas
+        const myChart = document.getElementById('myChart');
+        if (myChart) {
+            // Apply styles to the chart canvas
+            myChart.style.width = '100%';
+            myChart.style.height = '100%';
+        }
+    }
+
+    applyChartStyles();
 
     // BACKEND: Replace this section with a database query to check if the user is an admin
     if (storedEmail === adminEmail && storedPassword === adminPassword) {

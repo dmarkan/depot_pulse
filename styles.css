@@ -345,11 +345,12 @@ button.profile-button .profile-icon {
 }
 
 #chart-container {
-  width: 100%;
+  width: 80vh;
   height: 40vh; /* 50% of the viewport height */
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
 }
 
 #myChart {
