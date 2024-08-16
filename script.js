@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    localStorage.clear();
     const adminEmail = 'admin@oximio.com';
     const adminPassword = 'admin123';
 
