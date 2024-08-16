@@ -40,28 +40,57 @@ document.addEventListener('DOMContentLoaded', function() {
     let isAdmin = false;
 
     function applyChartStyles() {
-        // Select the chart container
+        // Check if the device is in landscape orientation
+        if (window.matchMedia("(orientation: landscape)").matches) {
+            // Select the chart container
+            const chartContainer = document.getElementById('chart-container');
+            if (chartContainer) {
+                // Apply styles to the chart container
+                chartContainer.style.width = '80vh'; // 80% of the viewport height for width
+                chartContainer.style.height = '40vh'; // 40% of the viewport height
+                chartContainer.style.display = 'flex';
+                chartContainer.style.justifyContent = 'center';
+                chartContainer.style.alignItems = 'center';
+                chartContainer.style.margin = '0 auto'; // Center the container horizontally
+            }
+    
+            // Select the chart canvas
+            const myChart = document.getElementById('myChart');
+            if (myChart) {
+                // Apply styles to the chart canvas
+                myChart.style.width = '100%';
+                myChart.style.height = '100%';
+            }
+        } else {
+            // Optionally reset styles for portrait orientation
+            resetChartStyles();
+        }
+    }
+    
+    function resetChartStyles() {
         const chartContainer = document.getElementById('chart-container');
         if (chartContainer) {
-            // Apply styles to the chart container
-            chartContainer.style.width = '80vh'; // 50% of the page width
-            chartContainer.style.height = '40vh'; // 40% of the viewport height
+            // Reset styles for portrait orientation
+            chartContainer.style.width = '100%'; // Full width for portrait
+            chartContainer.style.height = '50vh'; // Adjust height if needed
             chartContainer.style.display = 'flex';
             chartContainer.style.justifyContent = 'center';
             chartContainer.style.alignItems = 'center';
-            chartContainer.style.margin = '0 auto'; // Center the container horizontally
+            chartContainer.style.margin = '0 auto';
         }
     
-        // Select the chart canvas
         const myChart = document.getElementById('myChart');
         if (myChart) {
-            // Apply styles to the chart canvas
             myChart.style.width = '100%';
             myChart.style.height = '100%';
         }
     }
-
-    applyChartStyles();
+    
+    // Apply styles initially when the DOM content is fully loaded
+    document.addEventListener('DOMContentLoaded', applyChartStyles);
+    
+    // Listen for orientation changes
+    window.addEventListener('resize', applyChartStyles);
 
     // BACKEND: Replace this section with a database query to check if the user is an admin
     if (storedEmail === adminEmail && storedPassword === adminPassword) {

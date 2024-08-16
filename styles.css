@@ -344,16 +344,36 @@ button.profile-button .profile-icon {
   display: none;
 }
 
-#chart-container {
-  width: 80vh;
-  height: 40vh; /* 50% of the viewport height */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
+/* Styles for landscape orientation */
+@media screen and (orientation: landscape) {
+  #chart-container {
+      width: 80vh; /* 80% of the viewport height for width */
+      height: 40vh; /* 40% of the viewport height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto; /* Center the container horizontally */
+  }
+
+  #myChart {
+      width: 100%;
+      height: 100%;
+  }
 }
 
-#myChart {
-  width: 100%;
-  height: 100%;
+/* Optional: Styles for portrait orientation or default styles */
+@media screen and (orientation: portrait) {
+  #chart-container {
+      width: 100%; /* Full width for portrait */
+      height: 50vh; /* Adjust height if needed */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+  }
+
+  #myChart {
+      width: 100%;
+      height: 100%;
+  }
 }
