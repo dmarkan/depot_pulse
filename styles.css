@@ -22,7 +22,7 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 100vh; /* Ensure container takes up full height */
 }
 
 h2 {
@@ -373,6 +373,11 @@ button.profile-button .profile-icon {
       justify-content: center;
       align-items: top;
       margin: 0 auto;
+  }
+
+  html, body {
+    height: 100vh; /* Fit the height to the viewport height */
+    overflow: hidden; /* Prevent scrolling */
   }
 
   #myChart {
