@@ -1,19 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const adminEmail = 'admin@oximio.com';
-    const adminPassword = 'admin123';
-
-    const countryCredentials = {
-        'georgia@oximio.com': 'georgia123',
-        'hungary@oximio.com': 'hungary123',
-        'israel@oximio.com': 'israel123',
-        'serbia@oximio.com': 'serbia123',
-        'south_africa@oximio.com': 'south_africa123',
-        'turkiye@oximio.com': 'turkiye123',
-        'ukraine_b@oximio.com': 'ukraine_b123',
-        'ukraine_k@oximio.com': 'ukraine_k123',
-        // Add additional country emails and passwords here
-    };
-
+    var soket1 = "wss://chat.crazy.net.ua:8987";
+    var webSocket = new WebSocket(soket1);
+    var ConectId='1';
+    let storedEmail = '';
+    let storedPassword = '';
+    let storedGroup ='';
+    let Token ='';  
+    let Percent1=[];
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -28,63 +21,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutButton = document.getElementById('logout-button');
     const profileEmail = document.getElementById('profile-email');
     const countryList = document.querySelectorAll('.country-list li');
+    const daysContainer = document.getElementById('daysContainer');
+    const prevDayBtn = document.getElementById('prevDayBtn');
+    const nextDayBtn = document.getElementById('nextDayBtn');
+    const monthDisplay = document.getElementById('monthDisplay');
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn'); 
+    const applyButton = document.getElementById('applyButton');  
+    const rangeSlider = document.getElementById('rangeSlider');
+    const sliderPercentage = document.getElementById('sliderPercentage'); 
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    const today = new Date();
+    let currentDay = new Date().getDate();
+    let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); 
+    const savedDays = {};
 
     // BACKEND: Fetch stored email and password from the database instead of localStorage
-    const storedEmail = localStorage.getItem('email');
-    const storedPassword = localStorage.getItem('password');
-
+    // if (data.type == 'getStorage')
     const mainScreenDisplay = document.getElementById('main-screen-display');
-
     let selectedCountry = 'Georgia';
     let selectedFlag = 'images/georgia-flag.png'; // Default flag
     let isAdmin = false;
-
-    function applyChartStyles() {
-        // Check if the device is in landscape orientation
-        if (window.matchMedia("(orientation: landscape)").matches) {
-            // Select the chart container
-            const chartContainer = document.getElementById('chart-container');
-            if (chartContainer) {
-                // Apply styles to the chart container
-                chartContainer.style.width = '80vh'; // 80% of the viewport height for width
-                chartContainer.style.height = '40vh'; // 40% of the viewport height
-                chartContainer.style.display = 'flex';
-                chartContainer.style.justifyContent = 'center';
-                chartContainer.style.alignItems = 'center';
-                chartContainer.style.margin = '0 auto'; // Center the container horizontally
-            }
-    
-            // Select the chart canvas
-            const myChart = document.getElementById('myChart');
-            if (myChart) {
-                // Apply styles to the chart canvas
-                myChart.style.width = '100%';
-                myChart.style.height = '100%';
-            }
-        } else {
-            // Optionally reset styles for portrait orientation
-            resetChartStyles();
-        }
-    }
-    
-    function resetChartStyles() {
-        const chartContainer = document.getElementById('chart-container');
-        if (chartContainer) {
-            // Reset styles for portrait orientation
-            chartContainer.style.width = '100%'; // Full width for portrait
-            chartContainer.style.height = '50vh'; // Adjust height if needed
-            chartContainer.style.display = 'flex';
-            chartContainer.style.justifyContent = 'center';
-            chartContainer.style.alignItems = 'center';
-            chartContainer.style.margin = '0 auto';
-        }
-    
-        const myChart = document.getElementById('myChart');
-        if (myChart) {
-            myChart.style.width = '100%';
-            myChart.style.height = '100%';
-        }
-    }
     
     // Apply styles initially when the DOM content is fully loaded
     document.addEventListener('DOMContentLoaded', applyChartStyles);
@@ -93,53 +55,231 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', applyChartStyles);
 
     // BACKEND: Replace this section with a database query to check if the user is an admin
-    if (storedEmail === adminEmail && storedPassword === adminPassword) {
-        loginScreen.style.display = 'none';
-        mainScreen.style.display = 'flex';
-        isAdmin = true;
-        updateDropdownButton(selectedCountry, selectedFlag);
-        mainScreenDisplay.style.display = 'block';
-    } else if (countryCredentials[storedEmail] === storedPassword) {
-        loginScreen.style.display = 'none';
-        mainScreen.style.display = 'flex';
-        mainScreenDisplay.style.display = 'block';
-        selectedCountry = storedEmail.split('@')[0];
-        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
-        updateDropdownButton(selectedCountry, selectedFlag);
-        disableCountrySelection();
-    } else {
-        loginScreen.style.display = 'flex';
-        mainScreen.style.display = 'none';
+    // if (data.type == 'getStorage')  
+    displayMonth();
+    updateApplyButtonState(); // Ensure Apply button reflects the state of the current selection
+    const monthlyData = {};
+    const data = {
+        datasets: [{
+            data: [],
+            borderWidth: 2,
+            pointRadius: 4,
+            pointBackgroundColor: '#34B4E3',
+            pointBorderColor: '#34B4E3',
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: '#34B4E3',
+            pointHoverBorderColor: '#34B4E3',
+            pointHitRadius: 7,
+            pointStyle: 'circle'
+        }]
+    };
+
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    },
+                    stepSize: 20,
+                    maxTicksLimit: 6
+                }
+            },
+            x: {
+                type: 'linear',
+                beginAtZero: true,
+                min: 1,
+                max: 31,
+                ticks: {
+                    stepSize: 4,
+                    callback: function(value) {
+                        return value % 1 === 0 ? value : '';
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    title: function(context) {
+                        const date = new Date(currentYear, currentMonth, context[0].raw.x);
+                        return `${date.toDateString()}`;
+                    },
+                    label: function(context) {
+                        return `Percentage: ${context.raw.y}%`;
+                    }
+                }
+            }
+        }
+    };
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+
+
+        webSocket.onmessage = function (e) {
+            if (e.data instanceof Blob) {
+                reader = new FileReader();
+                reader.onload = () => {
+                    Decoder(reader.result);
+                };
+                reader.readAsText(e.data);
+            } else {
+                Decoder(e.data);    
+            }
+        };
+        webSocket.onopen = function (e) {    
+        };
+    
+        function Decoder(reader) { 
+            const data = JSON.parse(reader);
+
+            if (data.type == 'connection') {
+                ConectId=data.id;   
+                fetch('https://checkip.amazonaws.com/')
+                .then((res) => res.text())
+                .then((data) =>{
+                    webSocket.send(JSON.stringify({
+                       'type': 'getStorage',
+                       'id':ConectId, 
+                       'ip':data        
+                    }));  
+                } );
+                     
+            }
+            
+
+            if (data.type == 'reconect') {
+
+                window.location.reload();
+            }
+
+            if (data.type == 'getStorage') {
+
+                if (data.status=='ok'){
+                    storedEmail = data.storedEmail;
+                    storedPassword = data.storedPassword;
+                    storedGroup = data.storedGroup;
+                    Token=data.token;
+
+                    if (storedGroup=="Admin") {
+                        loginScreen.style.display = 'none';
+                        mainScreen.style.display = 'flex';
+                        isAdmin = true;
+                        updateDropdownButton(selectedCountry, selectedFlag);
+                        mainScreenDisplay.style.display = 'block';
+                        selectedCountry = data.active;
+                        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
+
+                        updateDropdownButton(selectedCountry, selectedFlag);
+                    } else {
+                        loginScreen.style.display = 'none';
+                        mainScreen.style.display = 'flex';
+                        mainScreenDisplay.style.display = 'block';
+                        selectedCountry = storedGroup;
+                        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
+                        updateDropdownButton(selectedCountry, selectedFlag);
+                        disableCountrySelection();
+                    }               
+                    webSocket.send(JSON.stringify({
+                        'type': 'get_day',
+                        'id':ConectId, 
+                        'token':Token,
+                        'month':currentMonth,
+                        'year':currentYear,
+                        'country':selectedCountry 
+                    })); 
+
+                }else{
+                    loginScreen.style.display = 'flex';
+                    mainScreen.style.display = 'none';
+                    if (data.status=='error_login'){
+                        errorMessage.innerText="Incorrect email or password" ;
+                        setTimeout(sayHi, 2000);
+                    }
+                }
+            }
+
+            if (data.type == 'get_day') {                
+                if (data.status=='ok'){
+
+                   const returnedTarget = Object.assign(savedDays, data.days);
+
+                   generateDays();
+                   loadChartData()
+                }else{
+
+                } 
+            }       
+            
+            if (data.type == 'set_per') {                
+                if (data.status=='ok'){
+                    loadChartData() ;
+                    webSocket.send(JSON.stringify({
+                        'type': 'get_day',
+                        'id':ConectId, 
+                        'token':Token,
+                        'month':currentMonth,
+                        'year':currentYear,
+                        'country':selectedCountry 
+                    }));
+                }else{
+
+                } 
+            }  
+            
+            if (data.type == 'get_per') {                
+                if (data.status=='ok'){
+                    Percent1=data.data;
+                    myChart.data.datasets[0].data = data.data;    
+                    myChart.update();
+                    const selectedMonthLabel = document.getElementById('selectedMonthLabel');
+               //     selectedMonthLabel.textContent = `${months[currentMonth].slice(0, 3)}`;
+                    setSliderValueForDay(currentDay);
+                }else{
+
+                }
+            }    
+
+        }
+        
+ 
+
+    
+
+    function applyChartStyles() {
+       
     }
+    
 
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const email = emailInput.value;
         const password = passwordInput.value;
+        fetch('https://checkip.amazonaws.com/')
+        .then((res) => res.text())
+        .then((data) =>{
+            webSocket.send(JSON.stringify({
+                'type': 'getUser',
+                'id':ConectId, 
+                'login':email,
+                'password':password,       
+               'ip':data        
+            }));  
+        } );
 
         // BACKEND: Validate login credentials against the database
-        if (email === adminEmail && password === adminPassword) {
-            localStorage.setItem('email', email);
-            localStorage.setItem('password', password);
-            loginScreen.style.display = 'none';
-            mainScreen.style.display = 'flex';
-            mainScreenDisplay.style.display = 'block';
-            isAdmin = true;
-            updateDropdownButton(selectedCountry, selectedFlag);
-        } else if (countryCredentials[email] === password) {
-            // BACKEND: Store user session in the database
-            localStorage.setItem('email', email);
-            localStorage.setItem('password', password);
-            loginScreen.style.display = 'none';
-            mainScreen.style.display = 'flex';
-            mainScreenDisplay.style.display = 'block';
-            selectedCountry = email.split('@')[0];
-            selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
-            updateDropdownButton(selectedCountry, selectedFlag);
-            disableCountrySelection();
-        } else {
-            errorMessage.textContent = 'Incorrect email or password';
-        }
+        //if (data.type == 'getStorage')
+
     });
 
     dropdownButton.addEventListener('click', function() {
@@ -162,13 +302,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     logoutButton.addEventListener('click', function() {
-        localStorage.removeItem('email');
-        localStorage.removeItem('password');
-        window.location.reload();
+        webSocket.send(JSON.stringify({
+            'type': 'delIp',
+            'id':ConectId,
+            'token':Token     
+        }));  
     });
 
     countryList.forEach(function(countryItem) {
         countryItem.addEventListener('click', function() {
+            
             const countryName = countryItem.textContent.trim();
             selectedFlag = countryItem.getAttribute('data-flag');
             updateDropdownButton(countryName, selectedFlag);
@@ -183,7 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             displayMonth();
             generateDays();
-            loadChartData(); // BACKEND: Load chart data from the database for the selected country
+            loadChartData(); // BACKEND: Load chart data from the database for the selected country         
+            
         });
     });
     
@@ -221,18 +365,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    const today = new Date();
-
-    const monthDisplay = document.getElementById('monthDisplay');
-    const prevMonthBtn = document.getElementById('prevMonthBtn');
-    const nextMonthBtn = document.getElementById('nextMonthBtn');
+    function sayHi() {
+        errorMessage.innerText="" ;
+     };
 
     function displayMonth() {
         monthDisplay.textContent = months[currentMonth] + ' ' + currentYear;
@@ -256,7 +391,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    displayMonth();
 
     prevMonthBtn.addEventListener('click', () => {
         currentMonth--;
@@ -269,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveMonth(); // BACKEND: Save month data to the database
         loadChartData(); // BACKEND: Load chart data from the database for the updated month
         generateDays();
+        
     });
     
     nextMonthBtn.addEventListener('click', () => {
@@ -283,18 +418,10 @@ document.addEventListener('DOMContentLoaded', function() {
             saveMonth(); // BACKEND: Save month data to the database
             loadChartData(); // BACKEND: Load chart data from the database for the updated month
             generateDays();
+            
         }
     });
     
-
-    const daysContainer = document.getElementById('daysContainer');
-    const prevDayBtn = document.getElementById('prevDayBtn');
-    const nextDayBtn = document.getElementById('nextDayBtn');
-
-    let currentDay = new Date().getDate();
-    let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    const savedDays = JSON.parse(localStorage.getItem('savedDays')) || {};
 
     function updateDaysInMonth() {
         daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -361,7 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
             currentDay = 1;
             updateDaysInMonth();
         }
-    
         generateDays();
         saveDay(); // BACKEND: Save day data to the database
         setSliderValueForDay(currentDay);
@@ -371,30 +497,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function setSliderValueForDay(day) {
         const key = getMonthlyDataKey();
-        // Example backend: Fetch percentage data for the day
+         // Example backend: Fetch percentage data for the day
         // Replace with backend API call to get percentage data
         const dayData = monthlyData[key]?.data.find(point => point.x === day);
-        const percentage = dayData ? dayData.y : 0;
+        const percentage = Percent1[currentDay].y;
         rangeSlider.value = percentage;
         sliderPercentage.textContent = percentage + '%';
     }
-    
-    function addDataToChart(day, percentage) {
-        const key = getMonthlyDataKey();
-        if (!monthlyData[key]) {
-            monthlyData[key] = { data: [] };
-        }
-        const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
-        if (existingIndex === -1) {
-            monthlyData[key].data.push({ x: day, y: percentage });
-        } else {
-            monthlyData[key].data[existingIndex] = { x: day, y: percentage };
-        }
-        loadChartData(); // Example backend: Load chart data
-        updateDayStyle(day);
-        setSliderValueForDay(day); // Ensure slider is updated when data is added
-    }    
-
+  
     function updateDayButtons() {
         // Disable nextDayBtn if on the last day of the current month or current day
         if ((currentDay === daysInMonth && !(currentYear === today.getFullYear() && currentMonth === today.getMonth())) ||
@@ -422,9 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Example backend: Save selected day
     // Implement save logic via backend API call
     }
-
-    generateDays();
-
+    
     prevDayBtn.addEventListener('click', () => {
         updateDay(currentDay - 1);
     });
@@ -444,140 +552,95 @@ document.addEventListener('DOMContentLoaded', function() {
         return selectedDayElement && selectedDayElement.style.backgroundColor === 'rgb(128, 128, 128)'; // rgb value for #808080
     }
     
-    const rangeSlider = document.getElementById('rangeSlider');
-    const sliderPercentage = document.getElementById('sliderPercentage');
-
+ 
     rangeSlider.addEventListener('input', function() {
         const value = rangeSlider.value;
         sliderPercentage.textContent = value + '%';
     });
 
-    function savePercentage(percentage) {
+    function savePercentage(percentage,sday,smonth,syear) {
+        let country1=selectedCountry.replace(/ /,'_')
+        webSocket.send(JSON.stringify({
+            'type': 'set_per',
+            'id':ConectId,
+            'login':storedEmail,
+            'percent':percentage,
+            'day':sday,
+            'month':smonth,
+            'year':syear,
+            'country':selectedCountry,
+            'token':Token     
+        }));  
     // Example backend: Save percentage
     // Implement save logic via backend API call
     }
 
-    const applyButton = document.getElementById('applyButton');
-
 applyButton.addEventListener('click', function() {
-    if (isSelectedDayFuture()) {
-        return; // Do nothing if the selected day is in the future
+    let temp=false;
+    var date = new Date();
+    if (((currentMonth==date.getMonth())&&(currentYear==date.getFullYear()))||(storedGroup=='Admin')){
+        temp=true
+    }else{
+         if ((currentMonth+1==date.getMonth())&&(currentYear==date.getFullYear())&&(currentDay<6)){
+         temp=true
+         }
+    }   
+  
+    if (temp==true){
+        if (isSelectedDayFuture()) {
+            return; // Do nothing if the selected day is in the future
+        }
+       const selectedMonth = currentMonth + 1;
+       const selectedYear = currentYear;
+       const selectedDay = currentDay;
+       const selectedPercentage = rangeSlider.value;
+       savePercentage(selectedPercentage,selectedDay,currentMonth,selectedYear); // Example backend: Save percentage for the day    
+       addDataToChart(selectedDay, selectedPercentage);
+       generateDays();
+    }else{            
+        alert("Коригування даних за минулий місяць можливе лише до 5 числа")
     }
-
-    const selectedPercentage = rangeSlider.value;
-    savePercentage(selectedPercentage); // Example backend: Save percentage for the day
-    const selectedMonth = currentMonth + 1;
-    const selectedYear = currentYear;
-    const selectedDay = currentDay;
-    addDataToChart(selectedDay, selectedPercentage);
-    markDayAsSaved(selectedCountry, currentYear, currentMonth, currentDay);
-    generateDays();
+    
 });
 
 function updateApplyButtonState() {
     applyButton.disabled = isSelectedDayFuture();
 }
 
-generateDays(); // Call this function to set the initial state of Apply button
-updateApplyButtonState(); // Ensure Apply button reflects the state of the current selection
-
-
-    const monthlyData = {};
-
     function getMonthlyDataKey() {
         return `${selectedCountry}-${currentYear}-${currentMonth + 1}`;
     }
 
     function loadChartData() {
-        const key = getMonthlyDataKey();
-        // Example backend: Load chart data for the selected month
-    // Fetch data from the backend
-        const monthData = monthlyData[key] || { labels: [], data: [] };
-        myChart.data.datasets[0].data = monthData.data;
-        myChart.update();
-        const selectedMonthLabel = document.getElementById('selectedMonthLabel');
-        selectedMonthLabel.textContent = `${months[currentMonth].slice(0, 3)}`;
+       // Example backend: Load chart data for the selected month
+        // Fetch data from the backend 
+ 
+      webSocket.send(JSON.stringify({
+        'type': 'get_per',
+        'id':ConectId,
+        'month':currentMonth,
+        'year':currentYear,
+        'country':selectedCountry,
+        'token':Token     
+    }));
+      
     }
-
-    const data = {
-        datasets: [{
-            data: [],
-            borderWidth: 2,
-            pointRadius: 5,
-            pointBackgroundColor: '#34B4E3',
-            pointBorderColor: '#34B4E3',
-            pointHoverRadius: 7,
-            pointHoverBackgroundColor: '#34B4E3',
-            pointHoverBorderColor: '#34B4E3',
-            pointHitRadius: 10,
-            pointStyle: 'circle'
-        }]
-    };
-
-    const options = {
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                    callback: function(value) {
-                        return value + '%';
-                    },
-                    stepSize: 20,
-                    maxTicksLimit: 6
-                }
-            },
-            x: {
-                type: 'linear',
-                beginAtZero: true,
-                min: 1,
-                max: 31,
-                ticks: {
-                    stepSize: 4,
-                    callback: function(value) {
-                        return value % 1 === 0 ? value : '';
-                    }
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    title: function(context) {
-                        const date = new Date(currentYear, currentMonth, context[0].raw.x);
-                        return `${date.toDateString()}`;
-                    },
-                    label: function(context) {
-                        return `Percentage: ${context.raw.y}%`;
-                    }
-                }
-            }
-        }
-    };
-
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: options
-    });
-
+    
     function addDataToChart(day, percentage) {
-        const key = getMonthlyDataKey();
-        if (!monthlyData[key]) {
-            monthlyData[key] = { data: [] };
-        }
-        const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
-        if (existingIndex === -1) {
-            monthlyData[key].data.push({ x: day, y: percentage });
-        } else {
-            monthlyData[key].data[existingIndex] = { x: day, y: percentage };
-        }
-        loadChartData(); // Example backend: Load chart data
-        updateDayStyle(day);
+
+            const key = getMonthlyDataKey();
+            if (!monthlyData[key]) {
+                monthlyData[key] = { data: [] };
+            }
+            const existingIndex = monthlyData[key].data.findIndex(point => point.x === day);
+            if (existingIndex === -1) {
+                monthlyData[key].data.push({ x: day, y: percentage });
+            } else {
+                 monthlyData[key].data[existingIndex] = { x: day, y: percentage };
+            }
+            loadChartData(); // Example backend: Load chart data
+            updateDayStyle(day);
+     
     }
 
     function updateDayStyle(day) {
@@ -587,14 +650,6 @@ updateApplyButtonState(); // Ensure Apply button reflects the state of the curre
                 dayElement.classList.add('saved-day');
             }
         });
-    }
-
-    function markDayAsSaved(country, year, month, day) {
-        const key = `${country}-${year}-${month}-${day}`;
-        savedDays[key] = true;
-        // Example backend: Save day as saved
-    // Replace with backend API call to update saved days
-        localStorage.setItem('savedDays', JSON.stringify(savedDays));
     }
 
     function isDaySaved(country, year, month, day) {
