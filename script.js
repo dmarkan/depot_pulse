@@ -376,11 +376,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     function saveMonth() {
+        webSocket.send(JSON.stringify({
+            'type': 'get_day',
+            'id':ConectId, 
+            'token':Token,
+            'month':currentMonth,
+            'year':currentYear,
+            'country':selectedCountry 
+        })); 
         const selectedMonth = {
             month: currentMonth + 1,
             year: currentYear
         };
-    // BACKEND: Save selected month to the database
+        if (currentYear === today.getFullYear() && currentMonth === today.getMonth()){
+            if (currentDay<today.getDate()){
+              let delta =today.getDate()-currentDay;             
+              for (a=0;a<delta;a++){                             
+             nextDayBtn.click();                
+              }
+           }else{
+               let delta =currentDay-today.getDate(); 
+               console.log("Delta-"+delta)
+               for (a=0;a<delta;a++){                           
+               prevDayBtn.click();
+               }
+           }              
+       }
+
     }
 
     function updateMonthButtons() {
