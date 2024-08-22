@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var soket1 = "wss://chat.crazy.net.ua:8987";
+    var soket1 = "wss://pulse.oximio.com:8987";
     var webSocket = new WebSocket(soket1);
     var ConectId='1';
     let storedEmail = '';
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function savePercentage(percentage,sday,smonth,syear) {
-        let country1=selectedCountry.replace(/ /,'_')
+        let country1=selectedCountry.replace(/ /,'_');
         webSocket.send(JSON.stringify({
             'type': 'set_per',
             'id':ConectId,
