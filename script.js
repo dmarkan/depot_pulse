@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var webSocket = new WebSocket(soket1);
     var ConectId='1';
     let storedEmail = '';
+    let storedStatus ='';                                        // Добавлено
     let storedPassword = '';
     let storedGroup ='';
     let Token ='';  
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeButton = document.querySelectorAll('.close-icon');
     const logoutButton = document.getElementById('logout-button');
     const profileEmail = document.getElementById('profile-email');
+    const countryList0 = document.getElementById('country-list');                                      //  Добавлено
     const countryList = document.querySelectorAll('.country-list li');
     const daysContainer = document.getElementById('daysContainer');
     const prevDayBtn = document.getElementById('prevDayBtn');
@@ -166,24 +168,56 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.type == 'getStorage') {
 
                 if (data.status=='ok'){
-                    storedEmail = data.storedEmail;
+                    console.log(data);                                             // Добавлено
+                    storedEmail = data.storedEmail;                                 
+                    storedStatus = data.storedStatus;                             // Добавлено
                     storedPassword = data.storedPassword;
                     storedGroup = data.storedGroup;
                     Token=data.token;
-
-                    if (storedGroup=="Admin") {
-                        loginScreen.style.display = 'none';
-                        mainScreen.style.display = 'flex';
+                    console.log(storedStatus)                                      // Добавлено
+                    if (storedStatus=='read'){                                     // Добавлено  
+                        applyButton.style.visibility = 'hidden';                 // Добавлено
+                        rangeSlider.style.visibility = 'hidden';                    
+                    }
+                        loginScreen.style.display = 'none';                        // Добавлено
+                        mainScreen.style.display = 'flex';   
+                        if (storedGroup=="Admin"){
+                            storedGroup="Georgia,Hungary,Israel,Kenya,Serbia,South_Africa,Turkiye,Ukraine_B,Ukraine_K"
+                        }                 
+                        var array0 = storedGroup.split(',');
+                        console.log(array0)
+                    if (array0.length>1) {
                         isAdmin = true;
+                       for (a=0; a<array0.length;a++){
+                        let li = document.createElement("li");
+                            li.setAttribute('data-flag',"images/"+array0[a].toLowerCase()+"-flag.png");
+                            li.className='country0';
+                            li.innerText=array0[a];
+                        let img  = document.createElement("img");  
+                            img.src = "images/"+array0[a].toLowerCase()+"-flag.png";
+                            img.setAttribute('alt',array0[a]+' Flag');
+                            li.insertBefore(img, li.firstChild);
+                     countryList0.appendChild(li);                     
+                        }
+ 
                         updateDropdownButton(selectedCountry, selectedFlag);
                         mainScreenDisplay.style.display = 'block';
-                        selectedCountry = data.active;
-                        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
 
+                        let  delta=false;
+                        for (b=0;b<array0.length;b++){
+                            if(array0[b]==data.active){
+                                delta=true;
+                            }
+                        }
+                        console.log(delta)
+                        if (delta==true){
+                           selectedCountry = data.active;
+                        }else{
+                            selectedCountry = array0[0];
+                        } 
+                        selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
                         updateDropdownButton(selectedCountry, selectedFlag);
                     } else {
-                        loginScreen.style.display = 'none';
-                        mainScreen.style.display = 'flex';
                         mainScreenDisplay.style.display = 'block';
                         selectedCountry = storedGroup;
                         selectedFlag = `images/${selectedCountry.toLowerCase()}-flag.png`;
@@ -308,6 +342,28 @@ document.addEventListener('DOMContentLoaded', function() {
             'token':Token     
         }));  
     });
+
+
+
+    countryList0.onclick = function fn(e) {
+        e = e || event;
+        var target = e.target || e.srcElement;
+        const countryName = target.innerText;
+        selectedFlag = target.getAttribute('data-flag');
+        console.log(selectedFlag);
+        updateDropdownButton(countryName, selectedFlag);
+        countryPopup.style.display = 'none';
+        selectedCountry = countryName;    
+        // Set the current month and day
+        currentMonth = today.getMonth(); // Current month
+        currentYear = today.getFullYear(); // Current year
+        currentDay = today.getDate(); // Current day    
+        // Update UI
+        displayMonth();
+        generateDays();
+        loadChartData(); // BACKEND: Load chart data from the database for the selected country      
+    };
+
 
     countryList.forEach(function(countryItem) {
         countryItem.addEventListener('click', function() {
@@ -446,7 +502,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     function updateDaysInMonth() {
+        
         daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        if(storedStatus=='w&r'){                                                                                                         // Добавлено
+            let temp=false;                                                                                                                   // Добавлено
+            const date=new Date();                                                                                                            // Добавлено
+            if (((currentMonth==date.getMonth())&&(currentYear==date.getFullYear())&&(storedStatus=='w&r'))){        // Добавлено
+                 temp=true;                                                                                                                    // Добавлено
+            }else{                                                                                                                             // Добавлено
+                if ((currentMonth+1==date.getMonth())&&(currentYear==date.getFullYear())&&(date.getDate()<6)){                               // Добавлено
+                     temp=true;                                                                                                                   // Добавлено
+                }                                                                                                                            // Добавлено
+            }                                                                                                                                 // Добавлено
+            if (temp==true){                                                                                                                  // Добавлено
+                applyButton.style.visibility = 'visible';  
+                rangeSlider.style.visibility = 'visible';                                                                                    // Добавлено
+            }else{                                                                                                                            // Добавлено
+                applyButton.style.visibility = 'hidden';  
+                rangeSlider.style.visibility = 'hidden';                                                                                     // Добавлено  
+            }                                                                                                                                 // Добавлено
+        }                                                                                                                                   // Добавлено
     }
     
 
@@ -619,8 +694,6 @@ applyButton.addEventListener('click', function() {
        savePercentage(selectedPercentage,selectedDay,currentMonth,selectedYear); // Example backend: Save percentage for the day    
        addDataToChart(selectedDay, selectedPercentage);
        generateDays();
-    }else{            
-        alert("Коригування даних за минулий місяць можливе лише до 5 числа")
     }
     
 });
